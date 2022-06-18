@@ -90,71 +90,110 @@ public:
         int h = 0;
         //set<int,int> vis;
         int opponent = 3 - player;
+
         for(int i = 0; i<SIZE; i++){
             for(int j=0; j<SIZE; j++){
                 if(Board[i][j] == player){
-                    if(j+2<SIZE && Board[i][j+1] == player && Board[i][j+2] == player){
-                          
+                    //cout<<"PLAYER: "<<player<<"\n";
+                    //if(i>=5 && i<=6 && j>=5 && j<=6)h+=100,cout<<"YES\n";
+                    if(j+1<SIZE && Board[i][j+1] == player){  
                         h++;
-                        if(j+3<SIZE && Board[i][j+3] == player){
-                            h++;
-                            if(Board[i][j+4]<SIZE && Board[i][j+4] == player){
-                                h++;
+                        if(j+2<SIZE && Board[i][j+2] == player){
+                            h+=3;
+                            if(j+3<SIZE && Board[i][j+3] == player){
+                                h+=5;
+                                if(j+4<SIZE && Board[i][j+4] == player){
+                                    h+=10;
+                                }
                             }
                         }
                     }
-                    if(i+2<SIZE && Board[i+1][j] == player && Board[i+2][j] == player){
+                    if(i+1<SIZE && Board[i+1][j] == player){  
                         h++;
-                        if(i+3<SIZE && Board[i+3][j] == player){
-                            h++;
-                            if(i+4<SIZE && Board[i+4][j] == player){
-                                h++;
+                        if(i+2<SIZE && Board[i+2][j] == player){
+                            h+=3;
+                            if(i+3<SIZE && Board[i+3][j] == player){
+                                h+=5;
+                                if(i+4<SIZE && Board[i+4][j] == player){
+                                    h+=10;
+                                }
                             }
                         }
                     }
-                    if(i+2<SIZE && j+2<SIZE && Board[i+1][j+1] == player && Board[i+2][j+2] == player){
+                    if(i+1<SIZE && j+1<SIZE && Board[i+1][j+1] == player){
                         h++;
-                        if(i+3<SIZE && j+3<SIZE && Board[i+3][j+3] == player){
-                            h++;
-                            if(i+4<SIZE && j+4<SIZE && Board[i+4][j+4] == player){
-                                h++;
+                        if(i+2<SIZE && j+2<SIZE && Board[i+2][j+2] == player){
+                            h+=3;
+                            if(i+3<SIZE && j+3<SIZE && Board[i+3][j+3] == player){
+                                h+=5;
+                                if(i+4<SIZE && j+4<SIZE && Board[i+4][j+4] == player){
+                                    h+=10;
+                                }
                             }
                         }
                     }
-                    if(i+2<SIZE && j-2>=0 && Board[i+1][j-1] == player && Board[i+2][j-2] == player){
+                    if(i+1<SIZE && j-1>=0 && Board[i+1][j-1] == player){
                         h++;
-                        if(i+3<SIZE && j-3>=0 && Board[i+3][j-3] == player){
-                            h++;
-                            if(i+4<SIZE && j-4>=0 && Board[i+4][j-4] == player){
-                                h++;
+                        if(i+2<SIZE && j-2>=0 && Board[i+2][j-2] == player){
+                            h+=3;
+                            if(i+3<SIZE && j-3>=0 && Board[i+3][j-3] == player){
+                                h+=5;
+                                if(i+4<SIZE && j-4>=0 && Board[i+4][j-4] == player){
+                                    h+=10;
+                                }
                             }
                         }
                     }
                 }else if(Board[i][j] == opponent){
-                    if(j+3<SIZE && Board[i][j+1] == opponent && Board[i][j+2] == opponent && Board[i][j+3] == opponent){
+                    //if(i>4 && i<11 && j>4 && j<11)h-=2,cout<<"NO\n";
+                    if(j+1<SIZE && Board[i][j+1] == opponent){  
                         h--;
-                        if(j+4<SIZE && Board[i][j+4] == opponent){
-                            h--;
-                        } 
-                    }
-                    if(i+3<SIZE && Board[i+1][j] == opponent && Board[i+2][j] == opponent && Board[i+3][j] == opponent){
-                        h--;
-                        if(i+4<SIZE && Board[i+4][j] == opponent){
-                            h--;
-                        } 
-                    }
-                    if(i+3<SIZE && j+3<SIZE && Board[i+1][j+1] == opponent && Board[i+2][j+2] == opponent && Board[i+3][j+3] == opponent){
-                        h--;                 
-                        if(i+4<SIZE && j+4<SIZE && Board[i+4][j+4] == opponent){
-                            h--;
+                        if(j+2<SIZE && Board[i][j+2] == opponent){
+                            h-=3;
+                            if(j+3<SIZE && Board[i][j+3] == opponent){
+                                h-=5;
+                                if(j+4<SIZE && Board[i][j+4] == opponent){
+                                    h-=10;
+                                }
+                            }
                         }
-                        
                     }
-                    if(i+3<SIZE && j-3>=0 && Board[i+1][j-1] == opponent && Board[i+2][j-2] == opponent && Board[i+3][j-3] == opponent){
+                    if(i+1<SIZE && Board[i+1][j] == opponent){  
                         h--;
-                        if(i+4<SIZE && j-4>=0 && Board[i+4][j-4] == opponent){
-                            h--;
-                        }   
+                        if(i+2<SIZE && Board[i+2][j] == opponent){
+                            h-=3;
+                            if(i+3<SIZE && Board[i+3][j] == opponent){
+                                h-=5;
+                                if(i+4<SIZE && Board[i+4][j] == opponent){
+                                    h-=10;
+                                    //cout<<"NOOO";
+                                }
+                            }
+                        }
+                    }
+                    if(i+1<SIZE && j+1<SIZE && Board[i+1][j+1] == opponent){
+                        h--;
+                        if(i+2<SIZE && j+2<SIZE && Board[i+2][j+2] == opponent){
+                            h-=3;
+                            if(i+3<SIZE && j+3<SIZE && Board[i+3][j+3] == opponent){
+                                h-=5;
+                                if(i+4<SIZE && j+4<SIZE && Board[i+4][j+4] == opponent){
+                                    h-=10;
+                                }
+                            }
+                        }
+                    }
+                    if(i+1<SIZE && j-1>=0 && Board[i+1][j-1] == opponent){
+                        h--;
+                        if(i+2<SIZE && j-2>=0 && Board[i+2][j-2] == opponent){
+                            h-=3;
+                            if(i+3<SIZE && j-3>=0 && Board[i+3][j-3] == opponent){
+                                h-=5;
+                                if(i+4<SIZE && j-4>=0 && Board[i+4][j-4] == opponent){
+                                    h-=10;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -179,7 +218,7 @@ Point Next_Point(State &state){
     int best_score = Minimax(state, 2, NEG_INF, INF, false);
     //cout<<"MPPPPPPPPPPPPPPPPPPPPPPPPPPPPP\n";
     cout<<"best point ("<<state.best_point.x<<","<<state.best_point.y<<")\n";
-    cout<<"Best ("<<Best.x<<","<<Best.y<<")\n";
+    //cout<<"Best ("<<Best.x<<","<<Best.y<<")\n";
     //cout<<state.best_point.x<<" "<<state.best_point.y<<"\n";
     //cout<<state.best_point.x<<" "<<state.best_point.y<<"\n";
     //cout<<state.best_point.x<<" "<<state.best_point.y<<"\n";
@@ -192,21 +231,21 @@ void write_valid_spot(std::ofstream& fout, State &state) {
     srand(time(NULL));
     int x, y;
     bool flag = false;
-    for(int i=0;i<SIZE;i++){
-        for(int j=0;j<SIZE;j++){
-            if(state.Board[i][j] == player){
-                flag = true;
-                break;
-            }
-        }
-    }
-    if(flag == true){ 
+    // for(int i=0;i<SIZE;i++){
+    //     for(int j=0;j<SIZE;j++){
+    //         if(state.Board[i][j] == player){
+    //             flag = true;
+    //             break;
+    //         }
+    //     }
+    // }
+    //if(flag == true){ 
         Point next = Next_Point(state);
         fout<<next.x<<" "<<next.y<<"\n";
-    }else{
-        if(board[SIZE/2][SIZE/2] == 0) fout<<SIZE/2<<" "<<SIZE/2;
-        else fout<<(SIZE/2)-1<<" "<<SIZE/2;
-    }
+    //}else{
+        //if(board[SIZE/2][SIZE/2] == 0) fout<<SIZE/2<<" "<<SIZE/2;
+        //else fout<<(SIZE/2)-1<<" "<<SIZE/2;
+    //}
     fout.flush();
 }
 
