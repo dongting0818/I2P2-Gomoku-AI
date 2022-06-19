@@ -93,25 +93,41 @@ public:
         Board[point.x][point.y] = disc;
     }
 
-    int evaluate_score(){
+int evaluate_score(){
         int h = 0;
         //set<int,int> vis;
         int opponent = 3 - player;
         for(int i = 0; i<SIZE; i++){
             for(int j=0; j<SIZE; j++){
-                if(Board[i][j] == player){
-                    //cout<<"plus\n";
-                    //cout<<i<<" "<<j<<"\n";
+                //cout<<i<<" "<<j<<'\n';
+                int flag1=0;
+                if(Board[i][j] == player){ 
+                    //_x_xx_
+                       
                     if(j+1<SIZE && Board[i][j+1] == player){  
-                        h+=100;
-                        //cout<<"plus\n";
+                        flag1++;
+                        //_xx_x_ && _x_xx_
+                        if(Board[i][j-1] == EMPTY){
+                            if(Board[i][j+2] == EMPTY){
+                               if(Board[i][j+3] == player){
+                                    if(Board[i][j+4] == EMPTY){
+                                        h+=2500;
+                                    }
+                               }
+                               if(Board[i][j-2] == player){
+                                    if(Board[i][j-3] == EMPTY){
+                                        h+=2500;
+                                    }
+                               } 
+                            }     
+                        }
                         if(j+2<SIZE && Board[i][j+2] == player){
-                            h+=30;
-                            //cout<<"plus\n";
+                            flag1++;
                             if(j+3<SIZE && Board[i][j+3] == player){
-                                h+=200;
+                                flag1++;
                                 if(j+4<SIZE && Board[i][j+4] == player){
-                                    h+=5000;
+                                    flag1++;
+                                    h+=50000;
                                 }
                                 else{
                                     int pt=0;
@@ -124,34 +140,77 @@ public:
                                     if(pt==2){
                                         h+=3000;
                                     }
-                                    if(pt==1){
-                                        h+=1500;
+                                    else if(pt==1){
+                                        h+=500;
                                     }
-                                    if(pt==0){
-                                        h-=230;
+                                    else if(pt==0){
+                                        flag1-=3;
                                     }
                                 }
                             }
                             else{
-                                if(j+3<SIZE && Board[i][j+3] == 0)
-                                {
-                                    h+=50;
-                                    if(j-1>=0 &&Board[i][j-1] == 0)
-                                    {
-                                        h+=1500;
-                                    }
+                                int pt=0;
+                                if(j+3<SIZE && Board[i][j+3] == 0){
+                                    pt++;
+                                    
+                                }
+                                if(j-1>=0 &&Board[i][j-1] == 0){
+                                    pt++;
+                                }
+                                if(pt==1){
+                                    h+=100;
+                                }
+                                if(pt==2){
+                                    h+=1500;
+                                }
+                                else if(pt==0){
+                                    flag1-=2;
                                 }
                             }
                         }
+                        else{
+                           int pt=0;
+                           if(j+2<SIZE && Board[i][j+2] == 0){
+                            pt++;      
+                           }
+                           if(j-1>=0 &&Board[i][j-1] == 0){
+                            pt++;
+                           }
+                           if(pt==1){
+                            h+=20;
+                           }
+                           else if(pt==2){
+                            h+=100;
+                           }
+                           else if(pt==0){
+                            flag1--;
+                           }
+                        }
+                        
                     }
                     if(i+1<SIZE && Board[i+1][j] == player){  
-                        h+=10;
+                        flag1++;
+                        if(Board[i-1][j] == EMPTY){
+                            if(Board[i+2][j] == EMPTY){
+                               if(Board[i+3][j] == player){
+                                    if(Board[i+4][j] == EMPTY){
+                                        h+=2500;
+                                    }
+                               }
+                               if(Board[i-2][j] == player){
+                                    if(Board[i-3][j] == EMPTY){
+                                        h+=2500;
+                                    }
+                               } 
+                            }     
+                        }
                         if(i+2<SIZE && Board[i+2][j] == player){
-                            h+=30;
+                            flag1++;
                             if(i+3<SIZE && Board[i+3][j] == player){
-                                h+=200;
+                                flag1++;
                                 if(i+4<SIZE && Board[i+4][j] == player){
-                                    h+=5000;
+                                    h+=50000;
+                                    flag1++;
                                 }
                                     else{
                                     int pt=0;
@@ -165,33 +224,66 @@ public:
                                         h+=3000;
                                     }
                                     if(pt==1){
-                                        h+=1500;
+                                        h+=500;
                                     }
                                     if(pt==0){
-                                        h-=230;
+                                        flag1-=3;
                                     }
                                 }
                             }
                             else{
+                                int pt=0;
                                 if(i+3<SIZE && Board[i+3][j] == 0){
-                                    h+=50;
-                                    if(i-1>=0 &&Board[i-1][j] == 0){
-                                        h+=1500;
-                                    }
+                                    pt++;
+                                    
+                                }
+                                if(i-1>=0 &&Board[i-1][j] == 0){
+                                    pt++;
+                                }
+                                if(pt==1){
+                                    h+=100;
+                                }
+                                if(pt==2){
+                                    h+=1500;
+                                }
+                                else if(pt==0){
+                                    flag1-=2;
                                 }
                             }
                         }
+                        else{
+                           int pt=0;
+                           if(i+2<SIZE && Board[i+2][j] == 0){
+                                    pt++;
+                                    
+                                }
+                                if(i-1>=0 &&Board[i-1][j] == 0){
+                                    pt++;
+                                }
+                                if(pt==1){
+                                    h+=20;
+                                }
+                                if(pt==2){
+                                    h+=100;
+                                }
+                                else if(pt==0){
+                                    flag1--;
+                                } 
+                        }
+                        
                     }
                     if(i+1<SIZE && j+1<SIZE && Board[i+1][j+1] == player){
-                        h+=10;
+                        flag1++;
                         if(i+2<SIZE && j+2<SIZE && Board[i+2][j+2] == player){
-                            h+=30;
+                            flag1++;
                             if(i+3<SIZE && j+3<SIZE && Board[i+3][j+3] == player){
-                                h+=200;
+                                flag1++;
                                 if(i+4<SIZE && j+4<SIZE && Board[i+4][j+4] == player){
-                                    h+=5000;
+                                    h+=50000;
+                                    flag1++;
                                 }
-                                    else{
+                                    else
+                                    {
                                     int pt=0;
                                     if(j+4<SIZE &&i+4<SIZE&& Board[i+4][j+4] == 0){
                                         pt++;
@@ -203,33 +295,66 @@ public:
                                         h+=3000;
                                     }
                                     if(pt==1){
-                                        h+=1500;
+                                        h+=500;
                                     }
                                     if(pt==0){
-                                        h-=230;
+                                        flag1-=3;
                                     }
                                 }
                             }
                             else{
+                                int pt=0;
                                 if(j+3<SIZE &&i+3<SIZE&& Board[i+3][j+3] == 0){
-                                    h+=50;
-                                    if(j-1>=0 &&i-1>=0&&Board[i-1][j-1] == 0){
-                                        h+=1500;
-                                    }
+                                    pt++;
+                                    
+                                }
+                                if(j-1>=0 &&i-1>=0&&Board[i-1][j-1] == 0){
+                                    pt++;
+                                }
+                                if(pt==1){
+                                    h+=100;
+                                }
+                                if(pt==2){
+                                    h+=1500;
+                                }
+                                else if(pt==0){
+                                    flag1-=2;
                                 }
                             }
                         }
+                        else{
+                            int pt=0;
+                                if(j+2<SIZE &&i+2<SIZE&& Board[i+2][j+2] == 0){
+                                    pt++;
+                                    
+                                }
+                                if(j-1>=0 &&i-1>=0&&Board[i-1][j-1] == 0){
+                                    pt++;
+                                }
+                                if(pt==1){
+                                    h+=20;
+                                }
+                                if(pt==2){
+                                    h+=100;
+                                }
+                                else if(pt==0){
+                                    flag1--;
+                                }
+                        }
+                        
                     }
                     if(i+1<SIZE && j-1>=0 && Board[i+1][j-1] == player){
-                        h+=10;
+                        flag1++;
                         if(i+2<SIZE && j-2>=0 && Board[i+2][j-2] == player){
-                            h+=30;
+                            flag1++;
                             if(i+3<SIZE && j-3>=0 && Board[i+3][j-3] == player){
-                                h+=200;
+                                flag1++;
                                 if(i+4<SIZE && j-4>=0 && Board[i+4][j-4] == player){
-                                    h+=5000;
+                                    h+=50000;
+                                    flag1++;
                                 }
-                                else{
+                                else
+                                {
                                     int pt=0;
                                     if(j-4>=0 && i+4<SIZE && Board[i+4][j-4] == 0){
                                         pt++;
@@ -241,32 +366,78 @@ public:
                                         h+=3000;
                                     }
                                     if(pt==1){
-                                        h+=1500;
+                                        h+=500;
                                     }
                                     if(pt==0){
-                                        h-=230;
+                                        flag1-=3;
                                     }
                                 }
                             }
                             else{
+                                int pt=0;
                                 if(j-3>=0 &&i+3<SIZE&& Board[i+3][j-3] == 0){
-                                    h+=50;
-                                    if(j+1<SIZE &&i-1>=0&&Board[i-1][j+1] == 0){
-                                        h+=1500;
-                                    }
+                                    pt++;
+                                    
+                                }
+                                if(j+1<SIZE &&i-1>=0&&Board[i-1][j+1] == 0){
+                                    pt++;
+                                }
+                                if(pt==1){
+                                    h+=100;
+                                }
+                                if(pt==2){
+                                    h+=1500;
+                                }
+                                else if(pt==0){
+                                    flag1-=2;
                                 }
                             }
                         }
+                        else{
+                            int pt=0;
+                                if(j-2>=0 &&i+2<SIZE&& Board[i+2][j-2] == 0){
+                                    pt++;
+                                    
+                                }
+                                if(j+1<SIZE &&i-1>=0&&Board[i-1][j+1] == 0){
+                                    pt++;
+                                }
+                                if(pt==1){
+                                    h+=20;
+                                }
+                                if(pt==2){
+                                    h+=100;
+                                }
+                                else if(pt==0){
+                                    flag1--;
+                                }
                     }
+                }
                 }else if(Board[i][j] == opponent){
                     if(j+1<SIZE && Board[i][j+1] == opponent){  
-                        h-=10;
+                        flag1--;
+                        //_xx_x_
+                        if(Board[i][j-1] == EMPTY){
+                            if(Board[i][j+2] == EMPTY){
+                               if(Board[i][j+3] == player){
+                                    if(Board[i][j+4] == EMPTY){
+                                        h-=2500;
+                                    }
+                               }
+                               if(Board[i][j-2] == player){
+                                    if(Board[i][j-3] == EMPTY){
+                                        h-=2500;
+                                    }
+                               } 
+                            }     
+                        }
                         if(j+2<SIZE && Board[i][j+2] == opponent){
-                            h-=30;
+                            flag1--;
                             if(j+3<SIZE && Board[i][j+3] == opponent){
-                                h-=200;
+                                flag1--;
                                 if(j+4<SIZE && Board[i][j+4] == opponent){
-                                    h-=5000;
+                                    flag1--;
+                                    h-=40000;
                                 }
                                 else{
                                     int pt=0;
@@ -275,37 +446,86 @@ public:
                                     }
                                     if(j-1>=0 && Board[i][j-1] == 0){
                                         pt++;
+                                        
                                     }
                                     if(pt==2){
-                                        h-=3000;
+                                        h-=2500;
                                     }
                                     if(pt==1){
-                                        h-=1500;
+                                        h-=400;
                                     }
                                     if(pt==0){
-                                        h+=230;
+                                        flag1+=3;
                                     }
                                 }
                             }
-                            else
-                            {
+                            else{
+                                int pt=0;
                                 if(j+3<SIZE && Board[i][j+3] == 0){
-                                    h-=50;
-                                    if(j-1>=0 &&Board[i][j-1] == 0){
-                                        h-=1500;
-                                    }
+                                    pt++;
+                                    
+                                }
+                                if(j-1>=0 &&Board[i][j-1] == 0){
+                                    pt++;
+                                    
+                                }
+                                if(pt==1){
+                                    //cout<<"attntion";
+                                    h-=80;
+                                }
+                                if(pt==2){
+                                    h-=2000;
+                                }
+                                else if(pt==0){
+                                    flag1+=2;
                                 }
                             }
                         }
+                        else{
+                            int pt=0;
+                                if(j+2<SIZE && Board[i][j+2] == 0){
+                                    pt++;
+                                    
+                                }
+                                if(j-1>=0 &&Board[i][j-1] == 0){
+                                    pt++;
+                                }
+                                if(pt==1){
+                                    h-=10;
+                                }
+                                if(pt==2){
+                                    h-=60;
+                                }
+                                else if(pt==0){
+                                    flag1++;
+                                }
+                        }
                     }
                     if(i+1<SIZE && Board[i+1][j] == opponent){  
-                        h-=10;
+                        flag1--;
+                        if(Board[i-1][j] == EMPTY){
+                            if(Board[i+2][j] == EMPTY){
+                               if(Board[i+3][j] == player){
+                                    if(Board[i+4][j] == EMPTY){
+                                        h-=2500;
+                                    }
+                               }
+                               if(Board[i-2][j] == player){
+                                    if(Board[i-3][j] == EMPTY){
+                                        h-=2500;
+                                    }
+                               } 
+                            }     
+                        }
                         if(i+2<SIZE && Board[i+2][j] == opponent){
-                            h-=30;
+                            h-=60;
+                            flag1--;
                             if(i+3<SIZE && Board[i+3][j] == opponent){
                                 h-=200;
+                                flag1--;
                                 if(i+4<SIZE && Board[i+4][j] == opponent){
-                                    h-=5000;
+                                    flag1--;
+                                    h-=40000;
                                     //cout<<"NOOO";
                                 }
                                 else{
@@ -317,35 +537,65 @@ public:
                                         pt++;
                                     }
                                     if(pt==2){
-                                        h-=3000;
+                                        h-=2500;
                                     }
                                     if(pt==1){
-                                        h-=1500;
+                                        h-=400;
                                     }
                                     if(pt==0){
-                                        h+=230;
+                                        flag1+=3;
                                     }
                                 }
                             }
-                            else
-                            {
+                            else{
+                                int pt=0;
                                 if(i+3<SIZE && Board[i+3][j] == 0){
-                                    h-=50;
-                                    if(i-1>=0 &&Board[i-1][j] == 0){
-                                        h-=1500;
-                                    }
+                                    pt++;   
+                                }
+                                if(i-1>=0 &&Board[i-1][j] == 0){
+                                    pt++;
+                                }
+                                if(pt==1){
+                                    h-=80;
+                                }
+                                if(pt==2){
+                                    h-=2000;
+                                    //cout<<"A";
+                                }
+                                else if(pt==0){
+                                    flag1+=2;
                                 }
                             }
                         }
+                        else{
+                        int pt=0;
+                                if(i+2<SIZE && Board[i+2][j] == 0){
+                                    pt++;
+                                }
+                                if(i-1>=0 &&Board[i-1][j] == 0){
+                                    pt++;
+                                }
+                                if(pt==1){
+                                    h-=10;
+                                }
+                                if(pt==2){
+                                    h-=60;
+                                }
+                                else if(pt==0){
+                                    flag1++;
+                                }
+                        }
+                        
                     }
                     if(i+1<SIZE && j+1<SIZE && Board[i+1][j+1] == opponent){
-                        h-=10;
+                        flag1--; 
                         if(i+2<SIZE && j+2<SIZE && Board[i+2][j+2] == opponent){
-                            h-=30;
+                            flag1--;
                             if(i+3<SIZE && j+3<SIZE && Board[i+3][j+3] == opponent){
-                                h-=200;
+                                flag1--;
                                 if(i+4<SIZE && j+4<SIZE && Board[i+4][j+4] == opponent){
-                                    h-=5000;
+                                    flag1--;
+                                    h-=40000;
                                 }
                                     else{
                                     int pt=0;
@@ -356,34 +606,65 @@ public:
                                         pt++;
                                     }
                                     if(pt==2){
-                                        h-=3000;
+                                        h-=2500;
                                     }
                                     if(pt==1){
-                                        h-=1500;
+                                        h-=400;
                                     }
                                     if(pt==0){
-                                        h+=230;
+                                        flag1+=3;
                                     }
                                 }
                             }
                             else{
+                                int pt=0;
                                 if(j+3<SIZE &&i+3<SIZE&& Board[i+3][j+3] == 0){
-                                    h-=50;
-                                    if(j-1>=0 &&i-1>=0&&Board[i-1][j-1] == 0){
-                                        h-=1500;
-                                    }
+                                    pt++; 
+                                }
+                                if(j-1>=0 &&i-1>=0&&Board[i-1][j-1] == 0){
+                                    pt++;
+                                }
+                                if(pt==1){
+                                    h-=80;
+                                }
+                                if(pt==2){
+                                    h-=2000;
+                                    //cout<<"A";
+                                }
+                                else{
+                                    flag1+=2;
                                 }
                             }
                         }
+                        else{
+                            int pt=0;
+                                if(j+2<SIZE &&i+2<SIZE&& Board[i+2][j+2] == 0){
+                                    pt++;
+                                }
+                                if(j-1>=0 && i-1>=0&&Board[i-1][j-1] == 0){
+                                    pt++;
+                                }
+                                if(pt==2){
+                                    h-=10;
+                                }
+                                else if(pt==1){
+                                    h-=60;
+                                }
+                                else if(pt==0){
+                                    flag1++;
+                                }
+                        }
                     }
                     if(i+1<SIZE && j-1>=0 && Board[i+1][j-1] == opponent){
-                        h-=10;
+                        flag1--;
                         if(i+2<SIZE && j-2>=0 && Board[i+2][j-2] == opponent){
-                            h-=30;
+                            flag1--;
                             if(i+3<SIZE && j-3>=0 && Board[i+3][j-3] == opponent){
+                                flag1--;
                                 h-=200;
                                 if(i+4<SIZE && j-4>=0 && Board[i+4][j-4] == opponent){
-                                    h-=5000;
+                                    flag1--;
+                                    h-=40000;
                                 }
                                 else{
                                     int pt=0;
@@ -394,33 +675,73 @@ public:
                                         pt++;
                                     }
                                     if(pt==2){
-                                        h-=4000;
+                                        h-=2500;
                                     }
                                     if(pt==1){
-                                        h-=2500;
-                                        //cout<<"hi"<<i<<" "<<j<<'\n';
+                                        h-=400;
                                     }
                                     if(pt==0){
-                                        h+=230;
+                                        flag1+=3;
                                     }
                                 }
                             }
-                            else{
-                                if(j-3>=0 &&i+3<SIZE&& Board[i+3][j-3] == 0){
-                                    h-=50;
-                                    if(j+1<SIZE &&i-1>=0&&Board[i-1][j+1] == 0){
-                                        h-=1500;
-                                    }
+                            else
+                            {
+                                int pt=0;
+                                if(j-3>=0 && i+3<SIZE&& Board[i+3][j-3] == 0){
+                                    pt++;
+                                    
+                                }
+                                if(j+1<SIZE && i-1>=0&&Board[i-1][j+1] == 0){
+                                    pt++;
+                                }
+                                if(pt==1){
+                                    h-=80;
+                                }
+                                if(pt==2){
+                                    h-=2000;
+                                    //cout<<"A";
+                                }
+                                else if(pt==0){
+                                    flag1+=2;
                                 }
                             }
                         }
+                        else{
+                            int pt=0;
+                                if(j-2>=0 &&i+2<SIZE&& Board[i+2][j-2] == 0){
+                                    pt++;
+                                    
+                                }
+                                if(j+1<SIZE &&i-1>=0&&Board[i-1][j+1] == 0){
+                                    pt++;
+                                }
+                                if(pt==1){
+                                    h-=10;
+                                }
+                                if(pt==2){
+                                    h-=60;
+                                }
+                                else if(pt==0){
+                                    flag1++;
+                                }
+                        }
+                        
                     }
                 }
+                if(flag1>1){
+                   h+=flag1*50; 
+                }
+                
             }
         }
         return h;
     }
+
 };
+
+
+
 
 int Minimax(State state, int depth, int Alpha, int Beta, bool maximizingPlayer);
 
@@ -435,15 +756,7 @@ void read_board(std::ifstream& fin) {
 
 Point Next_Point(State &state){
     
-    int best_score = Minimax(state, 2, NEG_INF, INF, false);
-    //cout<<"MPPPPPPPPPPPPPPPPPPPPPPPPPPPPP\n";
-    cout<<"best point ("<<state.best_point.x<<","<<state.best_point.y<<")\n";
-    //cout<<"Best ("<<Best.x<<","<<Best.y<<")\n";
-    //cout<<state.best_point.x<<" "<<state.best_point.y<<"\n";
-    //cout<<state.best_point.x<<" "<<state.best_point.y<<"\n";
-    //cout<<state.best_point.x<<" "<<state.best_point.y<<"\n";
-    //cout<<state.best_point.x<<" "<<state.best_point.y<<"\n";
-    //cout<<"JIJJJJJJJJJJJJJJJJJJJJJJJ\n";
+    int best_score = Minimax(state, 2, NEG_INF, INF, true);
     return Best;   
 }
 
@@ -454,12 +767,12 @@ void write_valid_spot(std::ofstream& fout, State &state) {
     bool flag = false;
     for(int i=0;i<SIZE;i++){
       for(int j=0;j<SIZE;j++){
-             if(state.Board[i][j] == player){
-                 flag = true;
-                 break;
-             }
-         }
-     }
+              if(state.Board[i][j] == player){
+                  flag = true;
+                  break;
+              }
+          }
+      }
     if(flag == true){ 
         Point next = Next_Point(state);
         fout<<next.x<<" "<<next.y<<"\n";
@@ -480,23 +793,14 @@ int Minimax(State state, int depth, int Alpha, int Beta, bool maximizingPlayer){
         state.next_move_enum();
         int maxEval = NEG_INF;
         for(auto child : state.enum_move_point){
-            //cout<<"IN\n";
-            //if(child.x == 7 && child.y == 8) cout<<"YES\n";
-            //cout<<child.x<<" "<<child.y<<endl;
             State next = state;
             next.add_Point(child, player);
             int eval = Minimax(next, depth - 1, Alpha, Beta, false);
-            // if(eval > maxEval){
-            //     state.best_point = child;
-            //     Best = child;
-            // }
-            //cout<<"eval (max): "<<eval<<endl;
-            maxEval = max(eval, maxEval);
-            if(eval == maxEval){
-                state.best_point = child;
+            if(eval > maxEval){
+                //state.best_point = child;
                 Best = child;
             }
-            //child.score = maxEval;
+            maxEval = max(eval, maxEval);
             Alpha = max(Alpha, maxEval);
             if(Beta <= Alpha) break; 
         }
@@ -504,25 +808,15 @@ int Minimax(State state, int depth, int Alpha, int Beta, bool maximizingPlayer){
 
     }else{
         state.next_move_enum();
-       // cout<<"IN\n";
         int minEval = INF;
         for(Point child : state.enum_move_point){
-            //if(child.x == 7 && child.y == 8) cout<<"YES\n";
             State next = state;
             next.add_Point(child, 3-player);
             
             int eval = Minimax(next, depth - 1, Alpha, Beta, true);
-            // if(eval < minEval){
-            //     state.best_point = child;
-            //     Best = child;
-            // }
-            //cout<<"eval (min): "<<eval<<endl;
-            minEval = min(minEval, eval);
-            if(eval == minEval){
-                state.best_point = child;
-                Best = child;
+            if(eval < minEval){
             }
-            //child.score = minEval;
+            minEval = min(minEval, eval);
             Beta = min(Beta, minEval);
             if(Beta <= Alpha) break;
         }
@@ -539,7 +833,6 @@ int main(int, char** argv) {
     State init(board, player);
     
     write_valid_spot(fout, init);
-    //cout<<Best<<endl;
     fin.close();
     fout.close();
     return 0;
