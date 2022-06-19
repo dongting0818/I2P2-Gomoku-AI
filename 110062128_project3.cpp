@@ -140,238 +140,192 @@ public:
     void remove_Point(Point point){
         Board[point.x][point.y] = EMPTY;
     }
-
+int check(int i , int j){
+    if(Board[i-1][j-1] != player && Board[i-1][j]!= player && Board[i-1][j+1]!= player && Board[i][j-1]!= player && Board[i][j]!= player
+        &&Board[i][j+1] != player && Board[i+1][j-1]!= player && Board[i+1][j] != player && Board[i+1][j+1]!= player
+        &&Board[i-1][j-1] != 3-player && Board[i-1][j]!= 3-player && Board[i-1][j+1]!= 3-player && Board[i][j-1]!= 3-player && Board[i][j]!= 3-player
+        &&Board[i][j+1] != 3-player && Board[i+1][j-1]!= 3-player && Board[i+1][j] != 3-player && Board[i+1][j+1]!=3-player){
+            cout<<"in";
+            return 0;
+        }
+    return 1;
+}
 int evaluate_score(int who){
-    
+    int N5=0, open4=0, half4=0, open3=0, half3=0, open2=0, half2=0;
     int h = 0;
+    
     int the_other = 3-who;
       for(int i=0;i<SIZE;i++){
+        
         for(int j=0;j<SIZE;j++){
+            if(check(i,j) == 0){
+                continue;
+            }
             if(Board[i][j] == who){
 
                 //FIVE_IN_ROW ooooo
                 if(Board[i][j+1]==who && Board[i][j+2]==who && Board[i][j+3]==who && Board[i][j+4]==who){
-                    if(who == player) h+=FIVEINROW_PLY;
-                    else h+=FIVEINROW_OPPO;
+                    N5++;
                 }
                 if(Board[i+1][j]==who && Board[i+2][j]==who && Board[i+3][j]==who && Board[i+4][j]==who){
-                    if(who == player) h+=FIVEINROW_PLY;
-                    else h+=FIVEINROW_OPPO;
-                    //cout<<"W";
+                    N5++;
                 }
                 if(Board[i+1][j+1]==who && Board[i+2][j+2]==who && Board[i+3][j+3]==who && Board[i+4][j+4]==who){
-                    if(who == player) h+=FIVEINROW_PLY;
-                    else h+=FIVEINROW_OPPO;
+                    N5++;
                 }
                 if(Board[i+1][j-1]==who && Board[i+2][j-2]==who && Board[i+3][j-3]==who && Board[i+4][j-4]==who){
-                    if(who == player) h+=FIVEINROW_PLY;
-                    else h+=FIVEINROW_OPPO;
+                    N5++;
                 }
 
                 //LIVE_FOUR _oooo_
                 if(Board[i][j-1] == EMPTY && Board[i][j+1] == who && Board[i][j+2] == who && Board[i][j+3] == who && Board[i][j+4] == EMPTY){
-                    if(who == player) h+=LIVEFOUR_PLY;
-                    else h+=LIVEFOUR_OPPO;
-                    //cout<<"C1";
+                    open4++;
                 }
                 if(Board[i-1][j] == EMPTY && Board[i+1][j] == who && Board[i+2][j] == who && Board[i+3][j] == who && Board[i+4][j] == EMPTY){
-                    if(who == player){
-                        h+=LIVEFOUR_PLY;
-                        //cout<<"C2PLY";
-                    }
-                    else {
-                        h+=LIVEFOUR_OPPO;
-                        //cout<<"C2OPP";
-                    }
+                    open4++;
                     
                 }
                 if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == who && Board[i+2][j+2] == who && Board[i+3][j+3] == who && Board[i+4][j+4] == EMPTY){
-                    if(who == player) h+=LIVEFOUR_PLY;
-                    else h+=LIVEFOUR_OPPO;
-                    //cout<<"C3";
+                    open4++;
                 }
                 if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == who && Board[i+2][j-2] == who && Board[i+3][j-3] == who && Board[i+4][j-4] == EMPTY){
-                    if(who == player) h+=LIVEFOUR_PLY;
-                    else h+=LIVEFOUR_OPPO;
-                    //cout<<"C4";
+                    open4++;
                 }
 
                 //LIVE_THREE _ooo_
                 if(Board[i][j-1] == EMPTY && Board[i][j+1] == who && Board[i][j+2] == who && Board[i][j+3] == EMPTY){
-                    if(who == player) h+=LIVETHREE_PLY;
-                    else h+=LIVETHREE_OPPO;
+                    open3++;
                 }
                 if(Board[i-1][j] == EMPTY && Board[i+1][j] == who && Board[i+2][j] == who && Board[i+3][j] == EMPTY){
-                    if(who == player) h+=LIVETHREE_PLY;
-                    else h+=LIVETHREE_OPPO;
-                    //cout<<"N";
+                    open3++;
                 }
                 if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == who && Board[i+2][j+2] == who && Board[i+3][j+3] == EMPTY){
-                    if(who == player) h+=LIVETHREE_PLY;
-                    else h+=LIVETHREE_OPPO;
+                    open3++;
                 }
                 if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == who && Board[i+2][j-2] == who && Board[i+3][j-3] == EMPTY){
-                    if(who == player) h+=LIVETHREE_PLY;
-                    else h+=LIVETHREE_OPPO;
+                    open3++;
                 }
                 //DEADFOUR _oooox || xoooo_
                 if(Board[i][j-1] == EMPTY && Board[i][j+1] == who && Board[i][j+2] == who && Board[i][j+3] == who && Board[i][j+4] == the_other){
-                    if(who == player) h+=DEADFOUR_PLY;
-                    else h+=DEADFOUR_OPPO;
-                    //cout<<"E1";
+                    half4++;
                 }
                 if(Board[i-1][j] == EMPTY && Board[i+1][j] == who && Board[i+2][j] == who && Board[i+3][j] == who && Board[i+4][j] == the_other){
-                    if(who == player) h+=DEADFOUR_PLY;
-                    else h+=DEADFOUR_OPPO;
-                    //cout<<"E2";
-                    //cout<<"N";
+                    half4++;
                 }
                 if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == who && Board[i+2][j+2] == who && Board[i+3][j+3] == who && Board[i+4][j+4] == the_other){
-                    if(who == player) h+=DEADFOUR_PLY;
-                    else h+=DEADFOUR_OPPO;
-                    //cout<<"E3";
-                    //cout<<"A";
+                    half4++;
                 }
                 if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == who && Board[i+2][j-2] == who && Board[i+3][j-3] == who && Board[i+4][j-4] == the_other){
-                    if(who == player) h+=DEADFOUR_PLY;
-                    else h+=DEADFOUR_OPPO;
-                    //cout<<"E4";
+                    half4++;
                 }
                 
                 // OR
 
                 if(Board[i][j-1] == the_other && Board[i][j+1] == who && Board[i][j+2] == who && Board[i][j+3] == who && Board[i][j+4] == EMPTY){
-                    if(who == player) h+=DEADFOUR_PLY;
-                    else h+=DEADFOUR_OPPO;
-                    //cout<<"E5";
+                    half4++;
                 }
                 if(Board[i-1][j] == the_other && Board[i+1][j] == who && Board[i+2][j] == who && Board[i+3][j] == who && Board[i+4][j] == EMPTY){
-                    if(who == player) h+=DEADFOUR_PLY;
-                    else h+=DEADFOUR_OPPO;
-                    //cout<<"E6";
+                    half4++;
                 }
                 if(Board[i-1][j-1] == the_other && Board[i+1][j+1] == who && Board[i+2][j+2] == who && Board[i+3][j+3] == who && Board[i+4][j+4] == EMPTY){
-                    if(who == player) h+=DEADFOUR_PLY;
-                    else h+=DEADFOUR_OPPO;
-                    //cout<<"E7";
+                    half4++;
                 }
                 if(Board[i-1][j+1] == the_other && Board[i+1][j-1] == who && Board[i+2][j-2] == who && Board[i+3][j-3] == who && Board[i+4][j-4] == EMPTY){
-                    if(who == player) h+=DEADFOUR_PLY;
-                    else h+=DEADFOUR_OPPO;
-                    //cout<<"E8";
+                    half4++;
                 }
                 //DEAD_THREE _ooox || xooo_
                 if(Board[i][j-1] == EMPTY && Board[i][j+1] == who && Board[i][j+2] == who && Board[i][j+3] == the_other){
-                    if(who == player) h+=DEADTHREE_PLY;
-                    else h+=DEADTHREE_OPPO;
+                    half3++;
                 }
                 if(Board[i-1][j] == EMPTY && Board[i+1][j] == who && Board[i+2][j] == who && Board[i+3][j] == the_other){
-                    if(who == player) h+=DEADTHREE_PLY;
-                    else h+=DEADTHREE_OPPO;
+                    half3++;
                    
                 }
                 if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == who && Board[i+2][j+2] == who && Board[i+3][j+3] == the_other){
-                    if(who == player) h+=DEADTHREE_PLY;
-                    else h+=DEADTHREE_OPPO;
+                    half3++;
                 }
                 if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == who && Board[i+2][j-2] == who && Board[i+3][j-3] == the_other){
-                    if(who == player) h+=DEADTHREE_PLY;
-                    else h+=DEADTHREE_OPPO;
+                    half3++;
                 }
 
                 //OR 
 
                 if(Board[i][j-1] == the_other && Board[i][j+1] == who && Board[i][j+2] == who && Board[i][j+3] == EMPTY){
-                    if(who == player) h+=DEADTHREE_PLY;
-                    else h+=DEADTHREE_OPPO;
+                    half3++;
                 }
                 if(Board[i-1][j] == the_other && Board[i+1][j] == who && Board[i+2][j] == who && Board[i+3][j] == EMPTY){
-                    if(who == player) h+=DEADTHREE_PLY;
-                    else if(who == 3-player)h+=DEADTHREE_OPPO;
-                    //cout<<"N";
+                    half3++;
                 }
                 if(Board[i-1][j-1] == the_other && Board[i+1][j+1] == who && Board[i+2][j+2] == who && Board[i+3][j+3] == EMPTY){
-                    if(who == player) h+=DEADTHREE_PLY;
-                    else h+=DEADTHREE_OPPO;
+                    half3++;
                 }
                 if(Board[i-1][j+1] == the_other && Board[i+1][j-1] == who && Board[i+2][j-2] == who && Board[i+3][j-3] == EMPTY){
-                    if(who == player) h+=DEADTHREE_PLY;
-                    else h+=DEADTHREE_OPPO;
+                    half3++;
                 }
                 //DEAD_TWO _oox || xoo_
                 if(Board[i][j-1] == EMPTY && Board[i][j+1] == who && Board[i][j+2] == the_other){
-                    if(who == player) h+=DEADTWO_PLY;
-                    else h+=DEADTWO_OPPO;
+                    half2++;
                 }
                 if(Board[i-1][j] == EMPTY && Board[i+1][j] == who && Board[i+2][j] == the_other){
-                    if(who == player) h+=DEADTWO_PLY;
-                    else h+=DEADTWO_OPPO;
+                    half2++;
                 }
                 if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == who && Board[i+2][j+2] == the_other){
-                    if(who == player) h+=DEADTWO_PLY;
-                    else h+=DEADTWO_OPPO;
+                    half2++;
                 }
                 if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == who && Board[i+2][j-2] == the_other){
-                    if(who == player) h+=DEADTWO_PLY;
-                    else h+=DEADTWO_OPPO;
+                    half2++;
                 }
 
                 // OR
 
                 if(Board[i][j-1] == the_other && Board[i][j+1] == who && Board[i][j+2] == EMPTY){
-                    if(who == player) h+=DEADTWO_PLY;
-                    else h+=DEADTWO_OPPO;
+                    half2++;;
                 }
                 if(Board[i-1][j] == the_other && Board[i+1][j] == who && Board[i+2][j] == EMPTY){
-                    if(who == player) h+=DEADTWO_PLY;
-                    else h+=DEADTWO_OPPO;
+                    half2++;
                 }
                 if(Board[i-1][j-1] == the_other && Board[i+1][j+1] == who && Board[i+2][j+2] == EMPTY){
-                    if(who == player) h+=DEADTWO_PLY;
-                    else h+=DEADTWO_OPPO;
+                    half2++;
                 }
                 if(Board[i-1][j+1] == the_other && Board[i+1][j-1] == who && Board[i+2][j-2] == EMPTY){
-                    if(who == player) h+=DEADTWO_PLY;
-                    else h+=DEADTWO_OPPO;
+                    half2++;
                 }
                 //LIVE_TWO _oo_
                 if(Board[i][j-1] == the_other && Board[i][j+1] == who && Board[i][j+2] == EMPTY){
-                    if(who == player) h+=LIVETWO_PLY;
-                    else h+=LIVETWO_OPPO;
+                    open2++;
                 }
                 if(Board[i-1][j] == EMPTY && Board[i+1][j] == who && Board[i+2][j] == EMPTY){
-                    if(who == player) h+=LIVETWO_PLY;
-                    else h+=LIVETWO_OPPO;
+                    open2++;
                 }
                 if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == who && Board[i+2][j+2] == EMPTY){
-                    if(who == player) h+=LIVETWO_PLY;
-                    else h+=LIVETWO_OPPO;
+                    open2++;
                 }
                 if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == who && Board[i+2][j-2] == EMPTY){
-                    if(who == player) h+=LIVETWO_PLY;
-                    else h+=LIVETWO_OPPO;
+                    open2++;
                 } 
                 //LIVE_ONE _o_
                 if(Board[i][j-1] == EMPTY && Board[i][j+1] == EMPTY){
-                    if(who == player) h+=LIVEONE_PLY;
+                    //if(who == player) h+=LIVEONE_PLY;
                     //else h+=LIVEONE_OPPO;
                 }
                 if(Board[i-1][j] == EMPTY && Board[i+1][j] == EMPTY){
-                    if(who == player) h+=LIVEONE_PLY;
+                    //if(who == player) h+=LIVEONE_PLY;
                     //else h+=LIVEONE_OPPO;
                 }
                 if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == EMPTY){
-                    if(who == player) h+=LIVEONE_PLY;
+                    //if(who == player) h+=LIVEONE_PLY;
                     //else h+=LIVEONE_OPPO;
                 }
                 if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == EMPTY){
-                    if(who == player) h+=LIVEONE_PLY;
+                    //if(who == player) h+=LIVEONE_PLY;
                     //else h+=LIVEONE_OPPO;
                 }
             }
         }
       }
-      return h;
+      //cout<<"KOKO";
+      int g = 5000*N5 + 4800*open4 + 2500*half4 + 2000*open3 + 200*half3 + 50*open2 + 10*half2; 
+      return g;
     }      
 };
 
