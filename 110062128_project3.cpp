@@ -11,6 +11,51 @@ using namespace std;
 #define INF INT_MAX
 #define NEG_INF -999999999
 #define DEBUG 0; 
+
+// //=====================================================
+// //SCORE BOARD PLY
+// #define FIVEINROW_PLY 1000000  //  ooooo
+// #define LIVEFOUR_PLY  30000   //  _oooo_
+// #define LIVETHREE_PLY 15000   //  _ooo_
+// #define DEADFOUR_PLY  1000    // _oooox
+// #define DEADTHREE_PLY 800     // _ooox
+// #define DEADTWO_PLY   200     // _oox   
+// #define LIVETWO_PLY   800     // _oo_
+// #define LIVEONE_PLY   50      // _o_
+// //=====================================================
+// //SCORE BOARD OPPO
+// #define FIVEINROW_OPPO  1000000  //  xxxxx
+// #define LIVEFOUR_OPPO   550000   //  _xxxx_
+// #define LIVETHREE_OPPO  25000   //  _xxx_
+// #define DEADFOUR_OPPO   55000    // _xxxxo
+// #define DEADTHREE_OPPO  800     // _xxxo
+// #define DEADTWO_OPPO    200     // _xxo  
+// #define LIVETWO_OPPO    900     // _xx_
+// #define LIVEONE_OPPO    50      // _x_
+// //======================================================
+
+//=====================================================
+//SCORE BOARD PLY
+#define FIVEINROW_PLY 50000000  //  ooooo
+#define LIVEFOUR_PLY  1000000   //  _oooo_
+#define LIVETHREE_PLY 50000   //  _ooo_
+#define DEADFOUR_PLY  100    // _oooox
+#define DEADTHREE_PLY 100     // _ooox
+#define DEADTWO_PLY   10     // _oox   
+#define LIVETWO_PLY   100     // _oo_
+#define LIVEONE_PLY   5      // _o_
+//=====================================================
+//SCORE BOARD OPPO
+#define FIVEINROW_OPPO  5000000  //  xxxxx
+#define LIVEFOUR_OPPO   6000000   //  _xxxx_
+#define LIVETHREE_OPPO  1000000   //  _xxx_
+#define DEADFOUR_OPPO   5000000    // _xxxxo
+#define DEADTHREE_OPPO  100     // _xxxo
+#define DEADTWO_OPPO    200     // _xxo  
+#define LIVETWO_OPPO    120     // _xx_
+#define LIVEONE_OPPO    5     // _x_
+//======================================================
+
 enum SPOT_STATE {
     EMPTY = 0,
     BLACK = 1,
@@ -92,652 +137,242 @@ public:
     void add_Point(Point point, int disc){
         Board[point.x][point.y] = disc;
     }
-
-int evaluate_score(){
-        int h = 0;
-        //set<int,int> vis;
-        int opponent = 3 - player;
-        for(int i = 0; i<SIZE; i++){
-            for(int j=0; j<SIZE; j++){
-                //cout<<i<<" "<<j<<'\n';
-                int flag1=0;
-                if(Board[i][j] == player){ 
-                    //_x_xx_
-                       
-                    if(j+1<SIZE && Board[i][j+1] == player){  
-                        flag1++;
-                        //_xx_x_ && _x_xx_
-                        if(Board[i][j-1] == EMPTY){
-                            if(Board[i][j+2] == EMPTY){
-                               if(Board[i][j+3] == player){
-                                    if(Board[i][j+4] == EMPTY){
-                                        h+=2500;
-                                    }
-                               }
-                               if(Board[i][j-2] == player){
-                                    if(Board[i][j-3] == EMPTY){
-                                        h+=2500;
-                                    }
-                               } 
-                            }     
-                        }
-                        if(j+2<SIZE && Board[i][j+2] == player){
-                            flag1++;
-                            if(j+3<SIZE && Board[i][j+3] == player){
-                                flag1++;
-                                if(j+4<SIZE && Board[i][j+4] == player){
-                                    flag1++;
-                                    h+=50000;
-                                }
-                                else{
-                                    int pt=0;
-                                    if(j+4<SIZE && Board[i][j+4] == 0){
-                                        pt++;
-                                    }
-                                    if(j-1>=0 && Board[i][j-1] == 0){
-                                        pt++;
-                                    }
-                                    if(pt==2){
-                                        h+=3000;
-                                    }
-                                    else if(pt==1){
-                                        h+=500;
-                                    }
-                                    else if(pt==0){
-                                        flag1-=3;
-                                    }
-                                }
-                            }
-                            else{
-                                int pt=0;
-                                if(j+3<SIZE && Board[i][j+3] == 0){
-                                    pt++;
-                                    
-                                }
-                                if(j-1>=0 &&Board[i][j-1] == 0){
-                                    pt++;
-                                }
-                                if(pt==1){
-                                    h+=100;
-                                }
-                                if(pt==2){
-                                    h+=1500;
-                                }
-                                else if(pt==0){
-                                    flag1-=2;
-                                }
-                            }
-                        }
-                        else{
-                           int pt=0;
-                           if(j+2<SIZE && Board[i][j+2] == 0){
-                            pt++;      
-                           }
-                           if(j-1>=0 &&Board[i][j-1] == 0){
-                            pt++;
-                           }
-                           if(pt==1){
-                            h+=20;
-                           }
-                           else if(pt==2){
-                            h+=100;
-                           }
-                           else if(pt==0){
-                            flag1--;
-                           }
-                        }
-                        
-                    }
-                    if(i+1<SIZE && Board[i+1][j] == player){  
-                        flag1++;
-                        if(Board[i-1][j] == EMPTY){
-                            if(Board[i+2][j] == EMPTY){
-                               if(Board[i+3][j] == player){
-                                    if(Board[i+4][j] == EMPTY){
-                                        h+=2500;
-                                    }
-                               }
-                               if(Board[i-2][j] == player){
-                                    if(Board[i-3][j] == EMPTY){
-                                        h+=2500;
-                                    }
-                               } 
-                            }     
-                        }
-                        if(i+2<SIZE && Board[i+2][j] == player){
-                            flag1++;
-                            if(i+3<SIZE && Board[i+3][j] == player){
-                                flag1++;
-                                if(i+4<SIZE && Board[i+4][j] == player){
-                                    h+=50000;
-                                    flag1++;
-                                }
-                                    else{
-                                    int pt=0;
-                                    if(i+4<SIZE && Board[i+4][j] == 0){
-                                        pt++;
-                                    }
-                                    if(i-1>=0 && Board[i-1][j] == 0){
-                                        pt++;
-                                    }
-                                    if(pt==2){
-                                        h+=3000;
-                                    }
-                                    if(pt==1){
-                                        h+=500;
-                                    }
-                                    if(pt==0){
-                                        flag1-=3;
-                                    }
-                                }
-                            }
-                            else{
-                                int pt=0;
-                                if(i+3<SIZE && Board[i+3][j] == 0){
-                                    pt++;
-                                    
-                                }
-                                if(i-1>=0 &&Board[i-1][j] == 0){
-                                    pt++;
-                                }
-                                if(pt==1){
-                                    h+=100;
-                                }
-                                if(pt==2){
-                                    h+=1500;
-                                }
-                                else if(pt==0){
-                                    flag1-=2;
-                                }
-                            }
-                        }
-                        else{
-                           int pt=0;
-                           if(i+2<SIZE && Board[i+2][j] == 0){
-                                    pt++;
-                                    
-                                }
-                                if(i-1>=0 &&Board[i-1][j] == 0){
-                                    pt++;
-                                }
-                                if(pt==1){
-                                    h+=20;
-                                }
-                                if(pt==2){
-                                    h+=100;
-                                }
-                                else if(pt==0){
-                                    flag1--;
-                                } 
-                        }
-                        
-                    }
-                    if(i+1<SIZE && j+1<SIZE && Board[i+1][j+1] == player){
-                        flag1++;
-                        if(i+2<SIZE && j+2<SIZE && Board[i+2][j+2] == player){
-                            flag1++;
-                            if(i+3<SIZE && j+3<SIZE && Board[i+3][j+3] == player){
-                                flag1++;
-                                if(i+4<SIZE && j+4<SIZE && Board[i+4][j+4] == player){
-                                    h+=50000;
-                                    flag1++;
-                                }
-                                    else
-                                    {
-                                    int pt=0;
-                                    if(j+4<SIZE &&i+4<SIZE&& Board[i+4][j+4] == 0){
-                                        pt++;
-                                    }
-                                    if(j-1>=0 && i-1>=0&&Board[i-1][j-1] == 0){
-                                        pt++;
-                                    }
-                                    if(pt==2){
-                                        h+=3000;
-                                    }
-                                    if(pt==1){
-                                        h+=500;
-                                    }
-                                    if(pt==0){
-                                        flag1-=3;
-                                    }
-                                }
-                            }
-                            else{
-                                int pt=0;
-                                if(j+3<SIZE &&i+3<SIZE&& Board[i+3][j+3] == 0){
-                                    pt++;
-                                    
-                                }
-                                if(j-1>=0 &&i-1>=0&&Board[i-1][j-1] == 0){
-                                    pt++;
-                                }
-                                if(pt==1){
-                                    h+=100;
-                                }
-                                if(pt==2){
-                                    h+=1500;
-                                }
-                                else if(pt==0){
-                                    flag1-=2;
-                                }
-                            }
-                        }
-                        else{
-                            int pt=0;
-                                if(j+2<SIZE &&i+2<SIZE&& Board[i+2][j+2] == 0){
-                                    pt++;
-                                    
-                                }
-                                if(j-1>=0 &&i-1>=0&&Board[i-1][j-1] == 0){
-                                    pt++;
-                                }
-                                if(pt==1){
-                                    h+=20;
-                                }
-                                if(pt==2){
-                                    h+=100;
-                                }
-                                else if(pt==0){
-                                    flag1--;
-                                }
-                        }
-                        
-                    }
-                    if(i+1<SIZE && j-1>=0 && Board[i+1][j-1] == player){
-                        flag1++;
-                        if(i+2<SIZE && j-2>=0 && Board[i+2][j-2] == player){
-                            flag1++;
-                            if(i+3<SIZE && j-3>=0 && Board[i+3][j-3] == player){
-                                flag1++;
-                                if(i+4<SIZE && j-4>=0 && Board[i+4][j-4] == player){
-                                    h+=50000;
-                                    flag1++;
-                                }
-                                else
-                                {
-                                    int pt=0;
-                                    if(j-4>=0 && i+4<SIZE && Board[i+4][j-4] == 0){
-                                        pt++;
-                                    }
-                                    if(j+1<SIZE && i-1>=0 && Board[i-1][j+1] == 0){
-                                        pt++;
-                                    }
-                                    if(pt==2){
-                                        h+=3000;
-                                    }
-                                    if(pt==1){
-                                        h+=500;
-                                    }
-                                    if(pt==0){
-                                        flag1-=3;
-                                    }
-                                }
-                            }
-                            else{
-                                int pt=0;
-                                if(j-3>=0 &&i+3<SIZE&& Board[i+3][j-3] == 0){
-                                    pt++;
-                                    
-                                }
-                                if(j+1<SIZE &&i-1>=0&&Board[i-1][j+1] == 0){
-                                    pt++;
-                                }
-                                if(pt==1){
-                                    h+=100;
-                                }
-                                if(pt==2){
-                                    h+=1500;
-                                }
-                                else if(pt==0){
-                                    flag1-=2;
-                                }
-                            }
-                        }
-                        else{
-                            int pt=0;
-                                if(j-2>=0 &&i+2<SIZE&& Board[i+2][j-2] == 0){
-                                    pt++;
-                                    
-                                }
-                                if(j+1<SIZE &&i-1>=0&&Board[i-1][j+1] == 0){
-                                    pt++;
-                                }
-                                if(pt==1){
-                                    h+=20;
-                                }
-                                if(pt==2){
-                                    h+=100;
-                                }
-                                else if(pt==0){
-                                    flag1--;
-                                }
-                    }
-                }
-                }else if(Board[i][j] == opponent){
-                    if(j+1<SIZE && Board[i][j+1] == opponent){  
-                        flag1--;
-                        //_xx_x_
-                        if(Board[i][j-1] == EMPTY){
-                            if(Board[i][j+2] == EMPTY){
-                               if(Board[i][j+3] == player){
-                                    if(Board[i][j+4] == EMPTY){
-                                        h-=2500;
-                                    }
-                               }
-                               if(Board[i][j-2] == player){
-                                    if(Board[i][j-3] == EMPTY){
-                                        h-=2500;
-                                    }
-                               } 
-                            }     
-                        }
-                        if(j+2<SIZE && Board[i][j+2] == opponent){
-                            flag1--;
-                            if(j+3<SIZE && Board[i][j+3] == opponent){
-                                flag1--;
-                                if(j+4<SIZE && Board[i][j+4] == opponent){
-                                    flag1--;
-                                    h-=40000;
-                                }
-                                else{
-                                    int pt=0;
-                                    if(j+4<SIZE && Board[i][j+4] == 0){
-                                        pt++;
-                                    }
-                                    if(j-1>=0 && Board[i][j-1] == 0){
-                                        pt++;
-                                        
-                                    }
-                                    if(pt==2){
-                                        h-=2500;
-                                    }
-                                    if(pt==1){
-                                        h-=400;
-                                    }
-                                    if(pt==0){
-                                        flag1+=3;
-                                    }
-                                }
-                            }
-                            else{
-                                int pt=0;
-                                if(j+3<SIZE && Board[i][j+3] == 0){
-                                    pt++;
-                                    
-                                }
-                                if(j-1>=0 &&Board[i][j-1] == 0){
-                                    pt++;
-                                    
-                                }
-                                if(pt==1){
-                                    //cout<<"attntion";
-                                    h-=80;
-                                }
-                                if(pt==2){
-                                    h-=2000;
-                                }
-                                else if(pt==0){
-                                    flag1+=2;
-                                }
-                            }
-                        }
-                        else{
-                            int pt=0;
-                                if(j+2<SIZE && Board[i][j+2] == 0){
-                                    pt++;
-                                    
-                                }
-                                if(j-1>=0 &&Board[i][j-1] == 0){
-                                    pt++;
-                                }
-                                if(pt==1){
-                                    h-=10;
-                                }
-                                if(pt==2){
-                                    h-=60;
-                                }
-                                else if(pt==0){
-                                    flag1++;
-                                }
-                        }
-                    }
-                    if(i+1<SIZE && Board[i+1][j] == opponent){  
-                        flag1--;
-                        if(Board[i-1][j] == EMPTY){
-                            if(Board[i+2][j] == EMPTY){
-                               if(Board[i+3][j] == player){
-                                    if(Board[i+4][j] == EMPTY){
-                                        h-=2500;
-                                    }
-                               }
-                               if(Board[i-2][j] == player){
-                                    if(Board[i-3][j] == EMPTY){
-                                        h-=2500;
-                                    }
-                               } 
-                            }     
-                        }
-                        if(i+2<SIZE && Board[i+2][j] == opponent){
-                            h-=60;
-                            flag1--;
-                            if(i+3<SIZE && Board[i+3][j] == opponent){
-                                h-=200;
-                                flag1--;
-                                if(i+4<SIZE && Board[i+4][j] == opponent){
-                                    flag1--;
-                                    h-=40000;
-                                    //cout<<"NOOO";
-                                }
-                                else{
-                                    int pt=0;
-                                    if(i+4<SIZE && Board[i+4][j] == 0){
-                                        pt++;
-                                    }
-                                    if(i-1>=0 && Board[i-1][j] == 0){
-                                        pt++;
-                                    }
-                                    if(pt==2){
-                                        h-=2500;
-                                    }
-                                    if(pt==1){
-                                        h-=400;
-                                    }
-                                    if(pt==0){
-                                        flag1+=3;
-                                    }
-                                }
-                            }
-                            else{
-                                int pt=0;
-                                if(i+3<SIZE && Board[i+3][j] == 0){
-                                    pt++;   
-                                }
-                                if(i-1>=0 &&Board[i-1][j] == 0){
-                                    pt++;
-                                }
-                                if(pt==1){
-                                    h-=80;
-                                }
-                                if(pt==2){
-                                    h-=2000;
-                                    //cout<<"A";
-                                }
-                                else if(pt==0){
-                                    flag1+=2;
-                                }
-                            }
-                        }
-                        else{
-                        int pt=0;
-                                if(i+2<SIZE && Board[i+2][j] == 0){
-                                    pt++;
-                                }
-                                if(i-1>=0 &&Board[i-1][j] == 0){
-                                    pt++;
-                                }
-                                if(pt==1){
-                                    h-=10;
-                                }
-                                if(pt==2){
-                                    h-=60;
-                                }
-                                else if(pt==0){
-                                    flag1++;
-                                }
-                        }
-                        
-                    }
-                    if(i+1<SIZE && j+1<SIZE && Board[i+1][j+1] == opponent){
-                        flag1--; 
-                        if(i+2<SIZE && j+2<SIZE && Board[i+2][j+2] == opponent){
-                            flag1--;
-                            if(i+3<SIZE && j+3<SIZE && Board[i+3][j+3] == opponent){
-                                flag1--;
-                                if(i+4<SIZE && j+4<SIZE && Board[i+4][j+4] == opponent){
-                                    flag1--;
-                                    h-=40000;
-                                }
-                                    else{
-                                    int pt=0;
-                                    if(j+4<SIZE &&i+4<SIZE&& Board[i+4][j+4] == 0){
-                                        pt++;
-                                    }
-                                    if(j-1>=0 && i-1>=0&&Board[i-1][j-1] == 0){
-                                        pt++;
-                                    }
-                                    if(pt==2){
-                                        h-=2500;
-                                    }
-                                    if(pt==1){
-                                        h-=400;
-                                    }
-                                    if(pt==0){
-                                        flag1+=3;
-                                    }
-                                }
-                            }
-                            else{
-                                int pt=0;
-                                if(j+3<SIZE &&i+3<SIZE&& Board[i+3][j+3] == 0){
-                                    pt++; 
-                                }
-                                if(j-1>=0 &&i-1>=0&&Board[i-1][j-1] == 0){
-                                    pt++;
-                                }
-                                if(pt==1){
-                                    h-=80;
-                                }
-                                if(pt==2){
-                                    h-=2000;
-                                    //cout<<"A";
-                                }
-                                else{
-                                    flag1+=2;
-                                }
-                            }
-                        }
-                        else{
-                            int pt=0;
-                                if(j+2<SIZE &&i+2<SIZE&& Board[i+2][j+2] == 0){
-                                    pt++;
-                                }
-                                if(j-1>=0 && i-1>=0&&Board[i-1][j-1] == 0){
-                                    pt++;
-                                }
-                                if(pt==2){
-                                    h-=10;
-                                }
-                                else if(pt==1){
-                                    h-=60;
-                                }
-                                else if(pt==0){
-                                    flag1++;
-                                }
-                        }
-                    }
-                    if(i+1<SIZE && j-1>=0 && Board[i+1][j-1] == opponent){
-                        flag1--;
-                        if(i+2<SIZE && j-2>=0 && Board[i+2][j-2] == opponent){
-                            flag1--;
-                            if(i+3<SIZE && j-3>=0 && Board[i+3][j-3] == opponent){
-                                flag1--;
-                                h-=200;
-                                if(i+4<SIZE && j-4>=0 && Board[i+4][j-4] == opponent){
-                                    flag1--;
-                                    h-=40000;
-                                }
-                                else{
-                                    int pt=0;
-                                    if(j-4>=0 && i+4<SIZE && Board[i+4][j-4] == 0){
-                                        pt++;
-                                    }
-                                    if(j+1<SIZE && i-1>=0 && Board[i-1][j+1] == 0){
-                                        pt++;
-                                    }
-                                    if(pt==2){
-                                        h-=2500;
-                                    }
-                                    if(pt==1){
-                                        h-=400;
-                                    }
-                                    if(pt==0){
-                                        flag1+=3;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                int pt=0;
-                                if(j-3>=0 && i+3<SIZE&& Board[i+3][j-3] == 0){
-                                    pt++;
-                                    
-                                }
-                                if(j+1<SIZE && i-1>=0&&Board[i-1][j+1] == 0){
-                                    pt++;
-                                }
-                                if(pt==1){
-                                    h-=80;
-                                }
-                                if(pt==2){
-                                    h-=2000;
-                                    //cout<<"A";
-                                }
-                                else if(pt==0){
-                                    flag1+=2;
-                                }
-                            }
-                        }
-                        else{
-                            int pt=0;
-                                if(j-2>=0 &&i+2<SIZE&& Board[i+2][j-2] == 0){
-                                    pt++;
-                                    
-                                }
-                                if(j+1<SIZE &&i-1>=0&&Board[i-1][j+1] == 0){
-                                    pt++;
-                                }
-                                if(pt==1){
-                                    h-=10;
-                                }
-                                if(pt==2){
-                                    h-=60;
-                                }
-                                else if(pt==0){
-                                    flag1++;
-                                }
-                        }
-                        
-                    }
-                }
-                if(flag1>1){
-                   h+=flag1*50; 
-                }
-                
-            }
-        }
-        return h;
+    void remove_Point(Point point){
+        Board[point.x][point.y] = EMPTY;
     }
 
+int evaluate_score(int who){
+    
+    int h = 0;
+    int the_other = 3-who;
+      for(int i=0;i<SIZE;i++){
+        for(int j=0;j<SIZE;j++){
+            if(Board[i][j] == who){
+
+                //FIVE_IN_ROW ooooo
+                if(Board[i][j+1]==who && Board[i][j+2]==who && Board[i][j+3]==who && Board[i][j+4]==who){
+                    if(who == player) h+=FIVEINROW_PLY;
+                    else h+=FIVEINROW_OPPO;
+                }
+                if(Board[i+1][j]==who && Board[i+2][j]==who && Board[i+3][j]==who && Board[i+4][j]==who){
+                    if(who == player) h+=FIVEINROW_PLY;
+                    else h+=FIVEINROW_OPPO;
+                    //cout<<"W";
+                }
+                if(Board[i+1][j+1]==who && Board[i+2][j+2]==who && Board[i+3][j+3]==who && Board[i+4][j+4]==who){
+                    if(who == player) h+=FIVEINROW_PLY;
+                    else h+=FIVEINROW_OPPO;
+                }
+                if(Board[i+1][j-1]==who && Board[i+2][j-2]==who && Board[i+3][j-3]==who && Board[i+4][j-4]==who){
+                    if(who == player) h+=FIVEINROW_PLY;
+                    else h+=FIVEINROW_OPPO;
+                }
+
+                //LIVE_FOUR _oooo_
+                if(Board[i][j-1] == EMPTY && Board[i][j+1] == who && Board[i][j+2] == who && Board[i][j+3] == who && Board[i][j+4] == EMPTY){
+                    if(who == player) h+=LIVEFOUR_PLY;
+                    else h+=LIVEFOUR_OPPO;
+                    //cout<<"C1";
+                }
+                if(Board[i-1][j] == EMPTY && Board[i+1][j] == who && Board[i+2][j] == who && Board[i+3][j] == who && Board[i+4][j] == EMPTY){
+                    if(who == player){
+                        h+=LIVEFOUR_PLY;
+                        //cout<<"C2PLY";
+                    }
+                    else {
+                        h+=LIVEFOUR_OPPO;
+                        //cout<<"C2OPP";
+                    }
+                    
+                }
+                if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == who && Board[i+2][j+2] == who && Board[i+3][j+3] == who && Board[i+4][j+4] == EMPTY){
+                    if(who == player) h+=LIVEFOUR_PLY;
+                    else h+=LIVEFOUR_OPPO;
+                    //cout<<"C3";
+                }
+                if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == who && Board[i+2][j-2] == who && Board[i+3][j-3] == who && Board[i+4][j-4] == EMPTY){
+                    if(who == player) h+=LIVEFOUR_PLY;
+                    else h+=LIVEFOUR_OPPO;
+                    //cout<<"C4";
+                }
+
+                //LIVE_THREE _ooo_
+                if(Board[i][j-1] == EMPTY && Board[i][j+1] == who && Board[i][j+2] == who && Board[i][j+3] == EMPTY){
+                    if(who == player) h+=LIVETHREE_PLY;
+                    else h+=LIVETHREE_OPPO;
+                }
+                if(Board[i-1][j] == EMPTY && Board[i+1][j] == who && Board[i+2][j] == who && Board[i+3][j] == EMPTY){
+                    if(who == player) h+=LIVETHREE_PLY;
+                    else h+=LIVETHREE_OPPO;
+                    //cout<<"N";
+                }
+                if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == who && Board[i+2][j+2] == who && Board[i+3][j+3] == EMPTY){
+                    if(who == player) h+=LIVETHREE_PLY;
+                    else h+=LIVETHREE_OPPO;
+                }
+                if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == who && Board[i+2][j-2] == who && Board[i+3][j-3] == EMPTY){
+                    if(who == player) h+=LIVETHREE_PLY;
+                    else h+=LIVETHREE_OPPO;
+                }
+                //DEADFOUR _oooox || xoooo_
+                if(Board[i][j-1] == EMPTY && Board[i][j+1] == who && Board[i][j+2] == who && Board[i][j+3] == who && Board[i][j+4] == the_other){
+                    if(who == player) h+=DEADFOUR_PLY;
+                    else h+=DEADFOUR_OPPO;
+                    //cout<<"E1";
+                }
+                if(Board[i-1][j] == EMPTY && Board[i+1][j] == who && Board[i+2][j] == who && Board[i+3][j] == who && Board[i+4][j] == the_other){
+                    if(who == player) h+=DEADFOUR_PLY;
+                    else h+=DEADFOUR_OPPO;
+                    //cout<<"E2";
+                    //cout<<"N";
+                }
+                if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == who && Board[i+2][j+2] == who && Board[i+3][j+3] == who && Board[i+4][j+4] == the_other){
+                    if(who == player) h+=DEADFOUR_PLY;
+                    else h+=DEADFOUR_OPPO;
+                    //cout<<"E3";
+                    //cout<<"A";
+                }
+                if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == who && Board[i+2][j-2] == who && Board[i+3][j-3] == who && Board[i+4][j-4] == the_other){
+                    if(who == player) h+=DEADFOUR_PLY;
+                    else h+=DEADFOUR_OPPO;
+                    //cout<<"E4";
+                }
+                
+                // OR
+
+                if(Board[i][j-1] == the_other && Board[i][j+1] == who && Board[i][j+2] == who && Board[i][j+3] == who && Board[i][j+4] == EMPTY){
+                    if(who == player) h+=DEADFOUR_PLY;
+                    else h+=DEADFOUR_OPPO;
+                    //cout<<"E5";
+                }
+                if(Board[i-1][j] == the_other && Board[i+1][j] == who && Board[i+2][j] == who && Board[i+3][j] == who && Board[i+4][j] == EMPTY){
+                    if(who == player) h+=DEADFOUR_PLY;
+                    else h+=DEADFOUR_OPPO;
+                    //cout<<"E6";
+                }
+                if(Board[i-1][j-1] == the_other && Board[i+1][j+1] == who && Board[i+2][j+2] == who && Board[i+3][j+3] == who && Board[i+4][j+4] == EMPTY){
+                    if(who == player) h+=DEADFOUR_PLY;
+                    else h+=DEADFOUR_OPPO;
+                    //cout<<"E7";
+                }
+                if(Board[i-1][j+1] == the_other && Board[i+1][j-1] == who && Board[i+2][j-2] == who && Board[i+3][j-3] == who && Board[i+4][j-4] == EMPTY){
+                    if(who == player) h+=DEADFOUR_PLY;
+                    else h+=DEADFOUR_OPPO;
+                    //cout<<"E8";
+                }
+                //DEAD_THREE _ooox || xooo_
+                if(Board[i][j-1] == EMPTY && Board[i][j+1] == who && Board[i][j+2] == who && Board[i][j+3] == the_other){
+                    if(who == player) h+=DEADTHREE_PLY;
+                    else h+=DEADTHREE_OPPO;
+                }
+                if(Board[i-1][j] == EMPTY && Board[i+1][j] == who && Board[i+2][j] == who && Board[i+3][j] == the_other){
+                    if(who == player) h+=DEADTHREE_PLY;
+                    else h+=DEADTHREE_OPPO;
+                   
+                }
+                if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == who && Board[i+2][j+2] == who && Board[i+3][j+3] == the_other){
+                    if(who == player) h+=DEADTHREE_PLY;
+                    else h+=DEADTHREE_OPPO;
+                }
+                if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == who && Board[i+2][j-2] == who && Board[i+3][j-3] == the_other){
+                    if(who == player) h+=DEADTHREE_PLY;
+                    else h+=DEADTHREE_OPPO;
+                }
+
+                //OR 
+
+                if(Board[i][j-1] == the_other && Board[i][j+1] == who && Board[i][j+2] == who && Board[i][j+3] == EMPTY){
+                    if(who == player) h+=DEADTHREE_PLY;
+                    else h+=DEADTHREE_OPPO;
+                }
+                if(Board[i-1][j] == the_other && Board[i+1][j] == who && Board[i+2][j] == who && Board[i+3][j] == EMPTY){
+                    if(who == player) h+=DEADTHREE_PLY;
+                    else if(who == 3-player)h+=DEADTHREE_OPPO;
+                    //cout<<"N";
+                }
+                if(Board[i-1][j-1] == the_other && Board[i+1][j+1] == who && Board[i+2][j+2] == who && Board[i+3][j+3] == EMPTY){
+                    if(who == player) h+=DEADTHREE_PLY;
+                    else h+=DEADTHREE_OPPO;
+                }
+                if(Board[i-1][j+1] == the_other && Board[i+1][j-1] == who && Board[i+2][j-2] == who && Board[i+3][j-3] == EMPTY){
+                    if(who == player) h+=DEADTHREE_PLY;
+                    else h+=DEADTHREE_OPPO;
+                }
+                //DEAD_TWO _oox || xoo_
+                if(Board[i][j-1] == EMPTY && Board[i][j+1] == who && Board[i][j+2] == the_other){
+                    if(who == player) h+=DEADTWO_PLY;
+                    else h+=DEADTWO_OPPO;
+                }
+                if(Board[i-1][j] == EMPTY && Board[i+1][j] == who && Board[i+2][j] == the_other){
+                    if(who == player) h+=DEADTWO_PLY;
+                    else h+=DEADTWO_OPPO;
+                }
+                if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == who && Board[i+2][j+2] == the_other){
+                    if(who == player) h+=DEADTWO_PLY;
+                    else h+=DEADTWO_OPPO;
+                }
+                if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == who && Board[i+2][j-2] == the_other){
+                    if(who == player) h+=DEADTWO_PLY;
+                    else h+=DEADTWO_OPPO;
+                }
+
+                // OR
+
+                if(Board[i][j-1] == the_other && Board[i][j+1] == who && Board[i][j+2] == EMPTY){
+                    if(who == player) h+=DEADTWO_PLY;
+                    else h+=DEADTWO_OPPO;
+                }
+                if(Board[i-1][j] == the_other && Board[i+1][j] == who && Board[i+2][j] == EMPTY){
+                    if(who == player) h+=DEADTWO_PLY;
+                    else h+=DEADTWO_OPPO;
+                }
+                if(Board[i-1][j-1] == the_other && Board[i+1][j+1] == who && Board[i+2][j+2] == EMPTY){
+                    if(who == player) h+=DEADTWO_PLY;
+                    else h+=DEADTWO_OPPO;
+                }
+                if(Board[i-1][j+1] == the_other && Board[i+1][j-1] == who && Board[i+2][j-2] == EMPTY){
+                    if(who == player) h+=DEADTWO_PLY;
+                    else h+=DEADTWO_OPPO;
+                }
+                //LIVE_TWO _oo_
+                if(Board[i][j-1] == the_other && Board[i][j+1] == who && Board[i][j+2] == EMPTY){
+                    if(who == player) h+=LIVETWO_PLY;
+                    else h+=LIVETWO_OPPO;
+                }
+                if(Board[i-1][j] == EMPTY && Board[i+1][j] == who && Board[i+2][j] == EMPTY){
+                    if(who == player) h+=LIVETWO_PLY;
+                    else h+=LIVETWO_OPPO;
+                }
+                if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == who && Board[i+2][j+2] == EMPTY){
+                    if(who == player) h+=LIVETWO_PLY;
+                    else h+=LIVETWO_OPPO;
+                }
+                if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == who && Board[i+2][j-2] == EMPTY){
+                    if(who == player) h+=LIVETWO_PLY;
+                    else h+=LIVETWO_OPPO;
+                } 
+                //LIVE_ONE _o_
+                if(Board[i][j-1] == EMPTY && Board[i][j+1] == EMPTY){
+                    if(who == player) h+=LIVEONE_PLY;
+                    //else h+=LIVEONE_OPPO;
+                }
+                if(Board[i-1][j] == EMPTY && Board[i+1][j] == EMPTY){
+                    if(who == player) h+=LIVEONE_PLY;
+                    //else h+=LIVEONE_OPPO;
+                }
+                if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == EMPTY){
+                    if(who == player) h+=LIVEONE_PLY;
+                    //else h+=LIVEONE_OPPO;
+                }
+                if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == EMPTY){
+                    if(who == player) h+=LIVEONE_PLY;
+                    //else h+=LIVEONE_OPPO;
+                }
+            }
+        }
+      }
+      return h;
+    }      
 };
 
 
@@ -786,7 +421,7 @@ void write_valid_spot(std::ofstream& fout, State &state) {
 int Minimax(State state, int depth, int Alpha, int Beta, bool maximizingPlayer){
     if(depth == 0){
         //return the score base on the board (no recursion) 
-        return state.evaluate_score();   
+        return state.evaluate_score(player) - state.evaluate_score(3-player);   
     }
     
     if(maximizingPlayer){
@@ -796,12 +431,14 @@ int Minimax(State state, int depth, int Alpha, int Beta, bool maximizingPlayer){
             State next = state;
             next.add_Point(child, player);
             int eval = Minimax(next, depth - 1, Alpha, Beta, false);
+            //cout<<"point: ("<<child.x<<","<<child.y<<") "<<"eval: "<<eval<<"\n";
+            next.remove_Point(child);
             if(eval > maxEval){
                 //state.best_point = child;
                 Best = child;
             }
-            maxEval = max(eval, maxEval);
-            Alpha = max(Alpha, maxEval);
+            maxEval = max(maxEval, eval);
+            Alpha = max(Alpha, eval);
             if(Beta <= Alpha) break; 
         }
         return maxEval;
@@ -812,12 +449,12 @@ int Minimax(State state, int depth, int Alpha, int Beta, bool maximizingPlayer){
         for(Point child : state.enum_move_point){
             State next = state;
             next.add_Point(child, 3-player);
-            
             int eval = Minimax(next, depth - 1, Alpha, Beta, true);
+            next.remove_Point(child);
             if(eval < minEval){
             }
             minEval = min(minEval, eval);
-            Beta = min(Beta, minEval);
+            Beta = min(Beta, eval);
             if(Beta <= Alpha) break;
         }
         return minEval;
