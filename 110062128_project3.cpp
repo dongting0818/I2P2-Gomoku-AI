@@ -2,37 +2,14 @@
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
-#include <array>
 #include<set>
-#include<queue>
 #include<limits.h>
+#include <array>
+#include<queue>
 using namespace std;
 
 #define INF INT_MAX
-#define NEG_INF -999999999
-#define DEBUG 0; 
-
-//=====================================================
-//SCORE BOARD PLY
-#define FIVEINROW_PLY 5000000 //  ooooo
-#define LIVEFOUR_PLY  1000000   //  _oooo_
-#define LIVETHREE_PLY 50000   //  _ooo_
-#define DEADFOUR_PLY  100    // _oooox
-#define DEADTHREE_PLY 100     // _ooox
-#define DEADTWO_PLY   10     // _oox   
-#define LIVETWO_PLY   100     // _oo_
-#define LIVEONE_PLY   5      // _o_
-//=====================================================
-//SCORE BOARD OPPO
-#define FIVEINROW_OPPO  5000000  //  xxxxx
-#define LIVEFOUR_OPPO   5000000   //  _xxxx_
-#define LIVETHREE_OPPO  100000   //  _xxx_
-#define DEADFOUR_OPPO   5000000    // _xxxxo
-#define DEADTHREE_OPPO  100     // _xxxo
-#define DEADTWO_OPPO    50     // _xxo  
-#define LIVETWO_OPPO    120     // _xx_
-#define LIVEONE_OPPO    5     // _x_
-//======================================================
+#define NEG_INF -INT_MAX
 
 enum SPOT_STATE {
     EMPTY = 0,
@@ -79,16 +56,15 @@ class State{
 public:
     std::array<std::array<int, SIZE>, SIZE> Board; 
     std::set<Point> enum_move_point;
-    int player,score;
-    Point best_point;
-    State(std::array<std::array<int, SIZE>, SIZE>b, int ply){
+    //int player,score;
+    State(std::array<std::array<int, SIZE>, SIZE>b){
+        //this->player = ply;
+        //this->score = NEG_INF;
         for(int i=0;i<SIZE;i++){
             for(int j=0;j<SIZE;j++){
                 this->Board[i][j] = b[i][j];
             }
         }
-        this->player = ply;
-        this->score = NEG_INF;
     }
     State(State& copy){
         for(int i=0;i<SIZE;i++){
@@ -96,43 +72,45 @@ public:
                 this->Board[i][j] = copy.Board[i][j];
             }
         }
-        this->player = copy.player;
+        //this->player = copy.player;
     }
 
-    bool checkSurrounding(std::array<std::array<int, SIZE>, SIZE> bd, int i, int j){
+    int exam_jugongge(int i, int j,std::array<std::array<int, SIZE>, SIZE> gomoku){
         if(i>0 && i<SIZE-1){
             if(j>0 && j<SIZE-1){
-                return bd[i-1][j-1]>0 || bd[i-1][j]>0 || bd[i-1][j+1]>0 || bd[i][j-1]>0 || bd[i][j+1]>0 || bd[i+1][j-1]>0 || bd[i+1][j]>0 || bd[i+1][j+1]>0;
+                if(gomoku[i-1][j-1]>0 || gomoku[i-1][j]>0 || gomoku[i-1][j+1]>0 || gomoku[i][j-1]>0 || gomoku[i][j+1]>0 || gomoku[i+1][j-1]>0 || gomoku[i+1][j]>0 || gomoku[i+1][j+1]>0)
+                    return true;
             }
             else if(j==0){
-                return bd[i-1][j]>0 || bd[i-1][j+1]>0 || bd[i][j+1]>0 || bd[i+1][j]>0 || bd[i+1][j+1]>0;
+                if(gomoku[i-1][j]>0 || gomoku[i-1][j+1]>0 || gomoku[i][j+1]>0 || gomoku[i+1][j]>0 || gomoku[i+1][j+1]>0) return true;
             }
             else{
-                return bd[i-1][j]>0 || bd[i-1][j-1]>0 || bd[i][j-1]>0 || bd[i+1][j]>0 || bd[i+1][j-1]>0;
+                if(gomoku[i-1][j]>0 || gomoku[i-1][j-1]>0 || gomoku[i][j-1]>0 || gomoku[i+1][j]>0 || gomoku[i+1][j-1]>0) return true;
             }
         }
         else if(i == 0){
             if(j>0 && j<SIZE-1){
-                return bd[i][j-1]>0 || bd[i][j+1]>0 || bd[i+1][j-1]>0 || bd[i+1][j]>0 || bd[i][j+1]>0;
+                if(gomoku[i][j-1]>0 || gomoku[i][j+1]>0 || gomoku[i+1][j-1]>0 || gomoku[i+1][j]>0 || gomoku[i][j+1]>0)return true;
             }
             else if(j==0){
-                return bd[i+1][j]>0 || bd[i][j+1]>0 || bd[i+1][j+1]>0;
+                if(gomoku[i+1][j]>0 || gomoku[i][j+1]>0 || gomoku[i+1][j+1]>0) return true;
             }
             else{
-                return bd[i+1][j]>0 || bd[i][j-1]>0 || bd[i+1][j-1]>0;
+                if(gomoku[i+1][j]>0 || gomoku[i][j-1]>0 || gomoku[i+1][j-1]>0) return true;
             }
         }
         else{
             if(j>0 && j<SIZE-1){
-                return bd[i][j-1]>0 || bd[i-1][j-1]>0 || bd[i-1][j]>0 || bd[i-1][j+1]>0 || bd[i][j+1]>0;
+               if(gomoku[i][j-1]>0 || gomoku[i-1][j-1]>0 || gomoku[i-1][j]>0 || gomoku[i-1][j+1]>0 || gomoku[i][j+1]>0) return true;
             }
             else if(j==0){
-                return bd[i-1][j]>0 || bd[i-1][j+1]>0 || bd[i][j+1]>0;
+                if(gomoku[i-1][j]>0 || gomoku[i-1][j+1]>0 || gomoku[i][j+1]>0)return true;
             }
             else{
-                return bd[i][j-1]>0 || bd[i-1][j-1]>0 || bd[i-1][j]>0;
+                if(gomoku[i][j-1]>0 || gomoku[i-1][j-1]>0 || gomoku[i-1][j]>0)return true;
             }
         }
+        return false;
     }
 
     void next_move_enum(){
@@ -142,7 +120,7 @@ public:
                 if(Board[i][j] == EMPTY){
                     //check Jiugongge
                     
-                    if(checkSurrounding(board, i, j)){
+                    if(exam_jugongge(i,j,board) == 1){
                         this->enum_move_point.insert(Point(i,j));
                     }
                 }
@@ -361,9 +339,9 @@ int evaluate_score(int who){
       //cout<<"KOKO";
       int g;
       if(who == player)
-        g = 50000*N5 + 4800*open4 + 3000*half4 + 1500*special1 + 2000*open3 + 200*half3 + 50*open2 + 10*half2;
+        g = 50000*N5 + 4800*open4 + 2500*half4 + 800*special1 + 2000*open3 + 200*half3 + 50*open2 + 10*half2;
       else 
-        g = 550000*N5 + 4800*open4 + 3000*half4 + 1500*special1 + 2000*open3 + 200*half3 + 50*open2 + 10*half2; 
+        g = 55000*N5 + 5500*open4 + 3000*half4 + 1000*special1 + 2000*open3 + 200*half3 + 50*open2 + 10*half2; 
       return g;
     }      
 };
@@ -383,7 +361,6 @@ void read_board(std::ifstream& fin) {
 }
 
 Point Next_Point(State &state){
-    
     Point Best_candi;
     Best_candi.score = NEG_INF;
     state.next_move_enum();
@@ -395,7 +372,7 @@ Point Next_Point(State &state){
         next.add_Point(child, player);
         int score = next.evaluate_score(player);
         int opp_score = next.evaluate_score(3-player);
-        if(score>50000 || opp_score>550000){
+        if(score>550000 || opp_score>550000){
             Best = child;
         }
         state.remove_Point(child);
@@ -422,7 +399,7 @@ void write_valid_spot(std::ofstream& fout, State &state) {
         fout<<next.x<<" "<<next.y<<"\n";
     }else{
         if(board[SIZE/2][SIZE/2] == 0) fout<<SIZE/2<<" "<<SIZE/2;
-        else fout<<(SIZE/2)-1<<" "<<SIZE/2;
+        else fout<<(SIZE/2)+1<<" "<<SIZE/2+1;
     }
     fout.flush();
 }
@@ -448,11 +425,10 @@ int Minimax(State state, int depth, int Alpha, int Beta, bool maximizingPlayer, 
                 Best.score = eval;
             }
             maxEval = max(maxEval, eval);
-            Alpha = max(Alpha, eval);
+            Alpha = max(Alpha, maxEval);
             if(Beta <= Alpha) break; 
         }
         return maxEval;
-
     }else{
         state.next_move_enum();
         int minEval = INF;
@@ -464,7 +440,7 @@ int Minimax(State state, int depth, int Alpha, int Beta, bool maximizingPlayer, 
             if(eval < minEval){
             }
             minEval = min(minEval, eval);
-            Beta = min(Beta, eval);
+            Beta = min(Beta, minEval);
             if(Beta <= Alpha) break;
         }
         return minEval;
@@ -477,7 +453,7 @@ int main(int, char** argv) {
     std::ofstream fout(argv[2]);
     read_board(fin);
 
-    State init(board, player);
+    State init(board);
     
     write_valid_spot(fout, init);
     fin.close();
