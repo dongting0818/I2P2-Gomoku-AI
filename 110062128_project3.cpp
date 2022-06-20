@@ -12,31 +12,9 @@ using namespace std;
 #define NEG_INF -999999999
 #define DEBUG 0; 
 
-// //=====================================================
-// //SCORE BOARD PLY
-// #define FIVEINROW_PLY 1000000  //  ooooo
-// #define LIVEFOUR_PLY  30000   //  _oooo_
-// #define LIVETHREE_PLY 15000   //  _ooo_
-// #define DEADFOUR_PLY  1000    // _oooox
-// #define DEADTHREE_PLY 800     // _ooox
-// #define DEADTWO_PLY   200     // _oox   
-// #define LIVETWO_PLY   800     // _oo_
-// #define LIVEONE_PLY   50      // _o_
-// //=====================================================
-// //SCORE BOARD OPPO
-// #define FIVEINROW_OPPO  1000000  //  xxxxx
-// #define LIVEFOUR_OPPO   550000   //  _xxxx_
-// #define LIVETHREE_OPPO  25000   //  _xxx_
-// #define DEADFOUR_OPPO   55000    // _xxxxo
-// #define DEADTHREE_OPPO  800     // _xxxo
-// #define DEADTWO_OPPO    200     // _xxo  
-// #define LIVETWO_OPPO    900     // _xx_
-// #define LIVEONE_OPPO    50      // _x_
-// //======================================================
-
 //=====================================================
 //SCORE BOARD PLY
-#define FIVEINROW_PLY 50000000  //  ooooo
+#define FIVEINROW_PLY 5000000 //  ooooo
 #define LIVEFOUR_PLY  1000000   //  _oooo_
 #define LIVETHREE_PLY 50000   //  _ooo_
 #define DEADFOUR_PLY  100    // _oooox
@@ -47,11 +25,11 @@ using namespace std;
 //=====================================================
 //SCORE BOARD OPPO
 #define FIVEINROW_OPPO  5000000  //  xxxxx
-#define LIVEFOUR_OPPO   6000000   //  _xxxx_
-#define LIVETHREE_OPPO  1000000   //  _xxx_
+#define LIVEFOUR_OPPO   5000000   //  _xxxx_
+#define LIVETHREE_OPPO  100000   //  _xxx_
 #define DEADFOUR_OPPO   5000000    // _xxxxo
 #define DEADTHREE_OPPO  100     // _xxxo
-#define DEADTWO_OPPO    200     // _xxo  
+#define DEADTWO_OPPO    50     // _xxo  
 #define LIVETWO_OPPO    120     // _xx_
 #define LIVEONE_OPPO    5     // _x_
 //======================================================
@@ -120,6 +98,43 @@ public:
         }
         this->player = copy.player;
     }
+
+    bool checkSurrounding(std::array<std::array<int, SIZE>, SIZE> bd, int i, int j){
+        if(i>0 && i<SIZE-1){
+            if(j>0 && j<SIZE-1){
+                return bd[i-1][j-1]>0 || bd[i-1][j]>0 || bd[i-1][j+1]>0 || bd[i][j-1]>0 || bd[i][j+1]>0 || bd[i+1][j-1]>0 || bd[i+1][j]>0 || bd[i+1][j+1]>0;
+            }
+            else if(j==0){
+                return bd[i-1][j]>0 || bd[i-1][j+1]>0 || bd[i][j+1]>0 || bd[i+1][j]>0 || bd[i+1][j+1]>0;
+            }
+            else{
+                return bd[i-1][j]>0 || bd[i-1][j-1]>0 || bd[i][j-1]>0 || bd[i+1][j]>0 || bd[i+1][j-1]>0;
+            }
+        }
+        else if(i == 0){
+            if(j>0 && j<SIZE-1){
+                return bd[i][j-1]>0 || bd[i][j+1]>0 || bd[i+1][j-1]>0 || bd[i+1][j]>0 || bd[i][j+1]>0;
+            }
+            else if(j==0){
+                return bd[i+1][j]>0 || bd[i][j+1]>0 || bd[i+1][j+1]>0;
+            }
+            else{
+                return bd[i+1][j]>0 || bd[i][j-1]>0 || bd[i+1][j-1]>0;
+            }
+        }
+        else{
+            if(j>0 && j<SIZE-1){
+                return bd[i][j-1]>0 || bd[i-1][j-1]>0 || bd[i-1][j]>0 || bd[i-1][j+1]>0 || bd[i][j+1]>0;
+            }
+            else if(j==0){
+                return bd[i-1][j]>0 || bd[i-1][j+1]>0 || bd[i][j+1]>0;
+            }
+            else{
+                return bd[i][j-1]>0 || bd[i-1][j-1]>0 || bd[i-1][j]>0;
+            }
+        }
+    }
+
     void next_move_enum(){
         //scan the whole board
         for(int i=0;i<SIZE;i++){
@@ -127,7 +142,9 @@ public:
                 if(Board[i][j] == EMPTY){
                     //check Jiugongge
                     
-                    this->enum_move_point.insert(Point(i,j));
+                    if(checkSurrounding(board, i, j)){
+                        this->enum_move_point.insert(Point(i,j));
+                    }
                 }
             }
         }
@@ -140,27 +157,15 @@ public:
     void remove_Point(Point point){
         Board[point.x][point.y] = EMPTY;
     }
-int check(int i , int j){
-    if(Board[i-1][j-1] != player && Board[i-1][j]!= player && Board[i-1][j+1]!= player && Board[i][j-1]!= player && Board[i][j]!= player
-        &&Board[i][j+1] != player && Board[i+1][j-1]!= player && Board[i+1][j] != player && Board[i+1][j+1]!= player
-        &&Board[i-1][j-1] != 3-player && Board[i-1][j]!= 3-player && Board[i-1][j+1]!= 3-player && Board[i][j-1]!= 3-player && Board[i][j]!= 3-player
-        &&Board[i][j+1] != 3-player && Board[i+1][j-1]!= 3-player && Board[i+1][j] != 3-player && Board[i+1][j+1]!=3-player){
-            cout<<"in";
-            return 0;
-        }
-    return 1;
-}
+
 int evaluate_score(int who){
-    int N5=0, open4=0, half4=0, open3=0, half3=0, open2=0, half2=0;
+    int N5=0, open4=0, half4=0, open3=0, half3=0, open2=0, half2=0, special1=0;
     int h = 0;
     
     int the_other = 3-who;
       for(int i=0;i<SIZE;i++){
         
         for(int j=0;j<SIZE;j++){
-            if(check(i,j) == 0){
-                continue;
-            }
             if(Board[i][j] == who){
 
                 //FIVE_IN_ROW ooooo
@@ -320,11 +325,45 @@ int evaluate_score(int who){
                     //if(who == player) h+=LIVEONE_PLY;
                     //else h+=LIVEONE_OPPO;
                 }
+
+                //_oo_o_ || _o_oo_
+                if(Board[i][j-1] == EMPTY && Board[i][j+1] == who && Board[i][j+2] == EMPTY && Board[i][j+3] == who && Board[i][j+4] == EMPTY){
+                    special1++;
+                }
+                if(Board[i-1][j] == EMPTY && Board[i+1][j] == EMPTY && Board[i+2][j] == who && Board[i+3][j] == who && Board[i+4][j] == EMPTY){
+                    special1++;
+                }
+                if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == EMPTY && Board[i+2][j+2] == who && Board[i+3][j+3] == who && Board[i+4][j+4] == EMPTY){
+                    special1++;
+                }
+                if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == EMPTY && Board[i+2][j-2] == who && Board[i+3][j-3] == who && Board[i+4][j-4] == EMPTY){
+                    special1++;
+                }
+
+                //OR
+
+                if(Board[i][j-1] == EMPTY && Board[i][j+1] == EMPTY && Board[i][j+2] == who && Board[i][j+3] == who && Board[i][j+4] == EMPTY){
+                    special1++;
+                }
+                if(Board[i-1][j] == EMPTY && Board[i+1][j] == EMPTY && Board[i+2][j] == who && Board[i+3][j] == who && Board[i+4][j] == EMPTY){
+                    special1++;
+                }
+                if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == EMPTY && Board[i+2][j+2] == who && Board[i+3][j+3] == who && Board[i+4][j+4] == EMPTY){
+                    special1++;
+                }
+                if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == EMPTY && Board[i+2][j-2] == who && Board[i+3][j-3] == who && Board[i+4][j-4] == EMPTY){
+                    special1++;
+                }
+                
             }
         }
       }
       //cout<<"KOKO";
-      int g = 5000*N5 + 4800*open4 + 2500*half4 + 2000*open3 + 200*half3 + 50*open2 + 10*half2; 
+      int g;
+      if(who == player)
+        g = 50000*N5 + 4800*open4 + 3000*half4 + 1500*special1 + 2000*open3 + 200*half3 + 50*open2 + 10*half2;
+      else 
+        g = 550000*N5 + 4800*open4 + 3000*half4 + 1500*special1 + 2000*open3 + 200*half3 + 50*open2 + 10*half2; 
       return g;
     }      
 };
@@ -332,7 +371,7 @@ int evaluate_score(int who){
 
 
 
-int Minimax(State state, int depth, int Alpha, int Beta, bool maximizingPlayer);
+int Minimax(State state, int depth, int Alpha, int Beta, bool maximizingPlayer, bool flag);
 
 void read_board(std::ifstream& fin) {
     fin >> player;
@@ -345,7 +384,23 @@ void read_board(std::ifstream& fin) {
 
 Point Next_Point(State &state){
     
-    int best_score = Minimax(state, 2, NEG_INF, INF, true);
+    Point Best_candi;
+    Best_candi.score = NEG_INF;
+    state.next_move_enum();
+    
+    int score = Minimax(state, 3, NEG_INF, INF, true, true);
+    
+    for(Point child : state.enum_move_point){
+        State next = state;
+        next.add_Point(child, player);
+        int score = next.evaluate_score(player);
+        int opp_score = next.evaluate_score(3-player);
+        if(score>50000 || opp_score>550000){
+            Best = child;
+        }
+        state.remove_Point(child);
+    }
+    
     return Best;   
 }
 
@@ -372,7 +427,7 @@ void write_valid_spot(std::ofstream& fout, State &state) {
     fout.flush();
 }
 
-int Minimax(State state, int depth, int Alpha, int Beta, bool maximizingPlayer){
+int Minimax(State state, int depth, int Alpha, int Beta, bool maximizingPlayer, bool flag){
     if(depth == 0){
         //return the score base on the board (no recursion) 
         return state.evaluate_score(player) - state.evaluate_score(3-player);   
@@ -384,12 +439,13 @@ int Minimax(State state, int depth, int Alpha, int Beta, bool maximizingPlayer){
         for(auto child : state.enum_move_point){
             State next = state;
             next.add_Point(child, player);
-            int eval = Minimax(next, depth - 1, Alpha, Beta, false);
-            //cout<<"point: ("<<child.x<<","<<child.y<<") "<<"eval: "<<eval<<"\n";
+            int eval = Minimax(next, depth - 1, Alpha, Beta, false, false);
+            //if(flag == true)
+                //cout<<"point: ("<<child.x<<","<<child.y<<") "<<"eval: "<<eval<<"\n";
             next.remove_Point(child);
-            if(eval > maxEval){
-                //state.best_point = child;
+            if(eval > maxEval && flag == true){
                 Best = child;
+                Best.score = eval;
             }
             maxEval = max(maxEval, eval);
             Alpha = max(Alpha, eval);
@@ -403,7 +459,7 @@ int Minimax(State state, int depth, int Alpha, int Beta, bool maximizingPlayer){
         for(Point child : state.enum_move_point){
             State next = state;
             next.add_Point(child, 3-player);
-            int eval = Minimax(next, depth - 1, Alpha, Beta, true);
+            int eval = Minimax(next, depth - 1, Alpha, Beta, true, false);
             next.remove_Point(child);
             if(eval < minEval){
             }
