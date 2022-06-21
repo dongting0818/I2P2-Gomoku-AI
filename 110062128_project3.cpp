@@ -40,12 +40,6 @@ struct Point {
     bool operator<(const Point &r)const{
         if(x!=r.x) return x < r.x;
         if(y!=r.y) return y < r.y;
-        //  int num=SIZE/2;
-        //  int num1=(r.x-num)*(r.x-num)+(r.y-num)*(r.y-num);
-        //  int num2=(x-num)*(x-num)+(y-num)*(y-num);
-        //  if(num1!=num2){
-        //      return num1<num2;
-        // }
         return 0;
     } 
 };
@@ -56,10 +50,7 @@ class State{
 public:
     std::array<std::array<int, SIZE>, SIZE> Board; 
     std::set<Point> enum_move_point;
-    //int player,score;
     State(std::array<std::array<int, SIZE>, SIZE>b){
-        //this->player = ply;
-        //this->score = NEG_INF;
         for(int i=0;i<SIZE;i++){
             for(int j=0;j<SIZE;j++){
                 this->Board[i][j] = b[i][j];
@@ -85,7 +76,7 @@ public:
                 if(gomoku[i-1][j]>0 || gomoku[i-1][j+1]>0 || gomoku[i][j+1]>0 || gomoku[i+1][j]>0 || gomoku[i+1][j+1]>0) return true;
             }
             else{
-                if(gomoku[i-1][j]>0 || gomoku[i-1][j-1]>0 || gomoku[i][j-1]>0 || gomoku[i+1][j]>0 || gomoku[i+1][j-1]>0) return true;
+                if(gomoku[i-1][j]>0 || gomoku[i-1][j-1]>0 || gomoku[i+1][j]>0 || gomoku[i][j-1]>0 || gomoku[i+1][j-1]>0) return true;
             }
         }
         else if(i == 0){
@@ -101,13 +92,13 @@ public:
         }
         else{
             if(j>0 && j<SIZE-1){
-               if(gomoku[i][j-1]>0 || gomoku[i-1][j-1]>0 || gomoku[i-1][j]>0 || gomoku[i-1][j+1]>0 || gomoku[i][j+1]>0) return true;
+               if(gomoku[i-1][j-1]>0 ||gomoku[i][j-1]>0  || gomoku[i-1][j]>0 || gomoku[i-1][j+1]>0 || gomoku[i][j+1]>0) return true;
             }
             else if(j==0){
-                if(gomoku[i-1][j]>0 || gomoku[i-1][j+1]>0 || gomoku[i][j+1]>0)return true;
+                if(gomoku[i-1][j+1]>0 || gomoku[i-1][j]>0 || gomoku[i][j+1]>0)return true;
             }
             else{
-                if(gomoku[i][j-1]>0 || gomoku[i-1][j-1]>0 || gomoku[i-1][j]>0)return true;
+                if(gomoku[i-1][j-1]>0 || gomoku[i][j-1]>0  || gomoku[i-1][j]>0)return true;
             }
         }
         return false;
@@ -138,11 +129,10 @@ public:
 
 int evaluate_score(int who){
     int N5=0, open4=0, half4=0, open3=0, half3=0, open2=0, half2=0, special1=0;
-    int h = 0;
+    //int h = 0;
     
     int the_other = 3-who;
-      for(int i=0;i<SIZE;i++){
-        
+      for(int i=0;i<SIZE;i++){ 
         for(int j=0;j<SIZE;j++){
             if(Board[i][j] == who){
 
@@ -286,23 +276,6 @@ int evaluate_score(int who){
                 if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == who && Board[i+2][j-2] == EMPTY){
                     open2++;
                 } 
-                //LIVE_ONE _o_
-                if(Board[i][j-1] == EMPTY && Board[i][j+1] == EMPTY){
-                    //if(who == player) h+=LIVEONE_PLY;
-                    //else h+=LIVEONE_OPPO;
-                }
-                if(Board[i-1][j] == EMPTY && Board[i+1][j] == EMPTY){
-                    //if(who == player) h+=LIVEONE_PLY;
-                    //else h+=LIVEONE_OPPO;
-                }
-                if(Board[i-1][j-1] == EMPTY && Board[i+1][j+1] == EMPTY){
-                    //if(who == player) h+=LIVEONE_PLY;
-                    //else h+=LIVEONE_OPPO;
-                }
-                if(Board[i-1][j+1] == EMPTY && Board[i+1][j-1] == EMPTY){
-                    //if(who == player) h+=LIVEONE_PLY;
-                    //else h+=LIVEONE_OPPO;
-                }
 
                 //_oo_o_ || _o_oo_
                 if(Board[i][j-1] == EMPTY && Board[i][j+1] == who && Board[i][j+2] == EMPTY && Board[i][j+3] == who && Board[i][j+4] == EMPTY){
@@ -336,7 +309,6 @@ int evaluate_score(int who){
             }
         }
       }
-      //cout<<"KOKO";
       int g;
       if(who == player)
         g = 50000*N5 + 4800*open4 + 2500*half4 + 800*special1 + 2000*open3 + 200*half3 + 50*open2 + 10*half2;
@@ -361,11 +333,10 @@ void read_board(std::ifstream& fin) {
 }
 
 Point Next_Point(State &state){
-    Point Best_candi;
-    Best_candi.score = NEG_INF;
-    state.next_move_enum();
     
-    int score = Minimax(state, 3, NEG_INF, INF, true, true);
+    int tmp_score = Minimax(state, 3, NEG_INF, INF, true, true);
+    
+    state.next_move_enum();
     
     for(Point child : state.enum_move_point){
         State next = state;
@@ -378,13 +349,13 @@ Point Next_Point(State &state){
         state.remove_Point(child);
     }
     
-    return Best;   
+    return Best ;   
 }
 
 
 void write_valid_spot(std::ofstream& fout, State &state) {
     srand(time(NULL));
-    int x, y;
+    //int x, y;
     bool flag = false;
     for(int i=0;i<SIZE;i++){
       for(int j=0;j<SIZE;j++){
@@ -417,8 +388,6 @@ int Minimax(State state, int depth, int Alpha, int Beta, bool maximizingPlayer, 
             State next = state;
             next.add_Point(child, player);
             int eval = Minimax(next, depth - 1, Alpha, Beta, false, false);
-            //if(flag == true)
-                //cout<<"point: ("<<child.x<<","<<child.y<<") "<<"eval: "<<eval<<"\n";
             next.remove_Point(child);
             if(eval > maxEval && flag == true){
                 Best = child;
